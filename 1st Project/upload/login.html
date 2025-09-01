@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>로그인 / 회원가입 - VertScreen</title>
+  <style>
+    body{margin:0;font-family:Arial,"Noto Sans KR",sans-serif;background:#0b0f1a;color:#fff;display:flex;align-items:center;justify-content:center;height:100vh}
+    .container{background:#151d2e;padding:30px;border-radius:12px;width:350px;text-align:center}
+    h2{margin-bottom:20px}
+    input{width:100%;padding:10px;margin:8px 0;border:none;border-radius:6px}
+    button{width:100%;padding:10px;margin-top:10px;background:#00e5a8;border:none;border-radius:6px;font-weight:bold;color:#000;cursor:pointer}
+    .toggle{margin-top:15px;font-size:14px;color:#9fb0d0;cursor:pointer}
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2 id="formTitle">로그인</h2>
+    <!-- 로그인 폼 -->
+    <div id="loginForm">
+      <input type="text" id="loginId" placeholder="이메일 또는 아이디">
+      <input type="password" id="loginPw" placeholder="비밀번호">
+      <button onclick="login()">로그인</button>
+      <div class="toggle" onclick="showSignup()">회원가입 하기</div>
+    </div>
+    <!-- 회원가입 폼 -->
+    <div id="signupForm" style="display:none">
+      <input type="email" id="signupEmail" placeholder="이메일">
+      <input type="password" id="signupPw" placeholder="비밀번호">
+      <input type="password" id="signupPwConfirm" placeholder="비밀번호 재입력">
+      <input type="text" id="signupPhone" placeholder="전화번호">
+      <button onclick="signup()">회원가입</button>
+      <div class="toggle" onclick="showLogin()">로그인으로 돌아가기</div>
+    </div>
+  </div>
+
+  <script>
+    function showSignup(){
+      document.getElementById("loginForm").style.display="none";
+      document.getElementById("signupForm").style.display="block";
+      document.getElementById("formTitle").innerText="회원가입";
+    }
+    function showLogin(){
+      document.getElementById("signupForm").style.display="none";
+      document.getElementById("loginForm").style.display="block";
+      document.getElementById("formTitle").innerText="로그인";
+    }
+    function signup(){
+      const email=document.getElementById("signupEmail").value.trim();
+      const pw=document.getElementById("signupPw").value.trim();
+      const pwConfirm=document.getElementById("signupPwConfirm").value.trim();
+      const phone=document.getElementById("signupPhone").value.trim();
+
+      if(!email||!pw||!pwConfirm||!phone){alert("모든 항목을 입력하세요");return;}
+      if(pw!==pwConfirm){alert("비밀번호가 일치하지 않습니다.");return;}
+
+      const user={email,pw,phone};
+      localStorage.setItem("user_"+email,JSON.stringify(user));
+      alert("회원가입 성공! 이제 로그인 해주세요.");
+      showLogin();
+    }
+    function login(){
+      const loginId=document.getElementById("loginId").value.trim();
+      const pw=document.getElementById("loginPw").value.trim();
+
+      if(!loginId||!pw){alert("이메일 또는 아이디, 비밀번호를 입력하세요");return;}
+
+      const user=JSON.parse(localStorage.getItem("user_"+loginId));
+      if(user && user.pw===pw){
+        localStorage.setItem("currentUser",loginId);
+        alert(loginId+"님, 로그인 성공!");
+        window.location.href="index.html"; // 메인 페이지로 이동
+      }else{
+        alert("아이디(이메일) 또는 비밀번호가 올바르지 않습니다.");
+      }
+    }
+  </script>
+</body>
+</html>

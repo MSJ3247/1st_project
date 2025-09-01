@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>VertScreen – 지하철 옥외 광고 데모</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&family=Noto+Sans+KR:wght@400;500;700;900&display=swap"
+    rel="stylesheet">
+    <link rel="stylesheet" href="StyleOriginal.css">
+  <style>
+    
+  </style>
+</head>
+
+<body>
+  <!-- ===== Header ===== -->
+  <header class="site-header">
+    <div class="nav-wrap">
+      <a class="brand" href="#">
+        <img class="vertlogo" src="VertScreen_logo.png" alt="VertScreen">
+      </a>
+      <nav class="nav" aria-label="주요 메뉴">
+        <a href="#intro">프로젝트 소개</a>
+        <a href="#types">광고 종류</a>
+        <a href="#reviews">리뷰 게시판</a>
+        <a href="#proposal">광고 제안 게시판</a>
+        <a href="#party">파티 모집 게시판</a>
+      </nav>
+      <div class="spacer"></div>
+      <div class="actions">
+        <button class="btn" type="button">로그인</button>
+        <button class="btn primary" type="button">회원 가입</button>
+      </div>
+    </div>
+  </header>
+
+  <!-- ===== Main ===== -->
+  <main>
+    <!-- Hero: Large ad example -->
+    <section class="hero" id="intro">
+      <div class="screen" role="img" aria-label="지하철 옥외 광고 예시">
+        <div class="screen-header">
+          <div class="screen-logo"><span class="screen-badge"></span> VertScreen</div>
+          <div class="screen-slogan">오늘도, 상쾌하게!</div>
+        </div>
+        <div class="screen-media"></div>
+        <h1 class="headline">단 <span class="accent">7일간</span> 30% 할인!</h1>
+        <div class="screen-footer">
+          <div class="qrbox">
+            <div class="qr" aria-hidden="true"></div>
+            <div>
+              <div style="font-weight:800">지금 바로 다운로드</div>
+              <div class="fine">카메라로 QR을 스캔하세요</div>
+            </div>
+          </div>
+          <div class="fine">© 2025 VertScreen</div>
+        </div>
+      </div>
+
+      <aside class="panel">
+        <h2 id="types">광고 예시 썸네일</h2>
+        <div class="grid">
+          <div class="mock m1"><span class="tag">브랜드 캠페인</span></div>
+          <div class="mock m2"><span class="tag">프로모션</span></div>
+          <div class="mock m3"><span class="tag">행사 공지</span></div>
+          <div class="mock m4"><span class="tag">서비스 소개</span></div>
+        </div>
+      </aside>
+    </section>
+
+    <!-- Optional sections (anchors only) -->
+    <section class="section" id="reviews">
+      <h2>리뷰 게시판 (샘플 섹션)</h2>
+      <p class="fine">여기에 리뷰 리스트/카드를 배치할 수 있어요. 지금은 예시라 내용만 표시합니다.</p>
+    </section>
+
+    <section class="section" id="proposal">
+      <h2>광고 제안 게시판 (샘플 섹션)</h2>
+      <p class="fine">광고주가 제안 등록/협의할 수 있는 영역입니다.</p>
+    </section>
+
+    <section class="section" id="party">
+      <h2>파티 모집 게시판 (샘플 섹션)</h2>
+      <p class="fine">공동 광고 참여자를 모집하는 공간입니다.</p>
+    </section>
+
+    <!-- ===== Footer / Team ===== -->
+    <footer>
+      <h2>프로젝트 참여 인원</h2>
+      <div class="team">
+        <div class="card">
+          <div class="role">PM</div>
+          <div class="name">김가람</div>
+          <div class="info">이메일: garam@example.com<br>연락처: 010-1234-5678</div>
+          <div class="contact">
+            <span class="chip">garam@example.com</span>
+            <span class="chip">010-1234-5678</span>
+          </div>
+        </div>
+        <div class="card">
+          <div class="role">디자이너</div>
+          <div class="name">이서현</div>
+          <div class="info">이메일: seohyun@example.com<br>연락처: 010-2345-6789</div>
+          <div class="contact">
+            <span class="chip">seohyun@example.com</span>
+            <span class="chip">010-2345-6789</span>
+          </div>
+        </div>
+        <div class="card">
+          <div class="role">프론트엔드</div>
+          <div class="name">박지훈</div>
+          <div class="info">이메일: jihun@example.com<br>연락처: 010-3456-7890</div>
+          <div class="contact">
+            <span class="chip">jihun@example.com</span>
+            <span class="chip">010-3456-7890</span>
+          </div>
+        </div>
+        <div class="card">
+          <div class="role">백엔드</div>
+          <div class="name">최민수</div>
+          <div class="info">이메일: minsu@example.com<br>연락처: 010-4567-8901</div>
+          <div class="contact">
+            <span class="chip">minsu@example.com</span>
+            <span class="chip">010-4567-8901</span>
+          </div>
+        </div>
+      </div>
+    </footer>
+
+  </main>
+</body>
+
+</html>

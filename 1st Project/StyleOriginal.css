@@ -1,0 +1,382 @@
+:root {
+      --bg: #0b0f1a;
+      /* 배경 */
+      --panel: #0e1729;
+      /* 패널 배경 */
+      --line: #1f2a44;
+      /* 경계선 */
+      --text: #e8eefc;
+      /* 텍스트 */
+      --muted: #9fb0d0;
+      /* 보조 텍스트 */
+      --accent: #00e5a8;
+      /* 포인트 */
+      --accent-2: #ffd34e;
+      /* 서브 포인트 */
+      --shadow: 0 25px 80px rgba(0, 0, 0, .35);
+      --radius: 18px;
+    }
+
+    * {
+      box-sizing: border-box
+    }
+
+    html,
+    body {
+      height: 100%
+    }
+
+    body {
+      margin: 0;
+      color: var(--text);
+      font-family: Inter, "Noto Sans KR", system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+      background:
+        radial-gradient(900px 500px at 100% 0%, rgba(0, 229, 168, .12), transparent 40%),
+        radial-gradient(700px 450px at 0% 100%, rgba(255, 211, 78, .10), transparent 45%),
+        var(--bg);
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none
+    }
+
+    /* ===== Header ===== */
+    .site-header {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      backdrop-filter: blur(10px);
+      background: linear-gradient(180deg, rgba(11, 15, 26, .82), rgba(11, 15, 26, .55));
+      border-bottom: 1px solid rgba(255, 255, 255, .06);
+    }
+
+    .nav-wrap {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      gap: 18px;
+      padding: 16px 20px
+    }
+
+    .vertlogo{
+        width: 11em;
+        height: 7em;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-weight: 900;
+      letter-spacing: .2px
+    }
+
+    .brand span {
+      font-size: 20px
+    }
+
+    .nav {
+      display: flex;
+      gap: 14px;
+      margin-left: 18px
+    }
+
+    .nav a {
+      padding: 10px 12px;
+      border-radius: 999px;
+      border: 1px solid transparent;
+      font-weight: 700;
+      color: #dbeafe
+    }
+
+    .nav a:hover {
+      background: #0e1729;
+      border-color: #22314b
+    }
+
+    .spacer {
+      flex: 1
+    }
+
+    .actions {
+      display: flex;
+      gap: 10px
+    }
+
+    .btn {
+      appearance: none;
+      border: 1px solid #22314b;
+      background: #0e1729;
+      color: #dbeafe;
+      padding: 10px 14px;
+      border-radius: 999px;
+      font-weight: 800;
+      cursor: pointer
+    }
+
+    .btn.primary {
+      background: var(--accent);
+      color: #062e2a;
+      border-color: transparent
+    }
+
+    /* ===== Main ===== */
+    main {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 28px 20px 80px
+    }
+
+    /* Hero */
+    .hero {
+      display: grid;
+      grid-template-columns: 1.2fr .8fr;
+      gap: 22px;
+      align-items: stretch
+    }
+
+    @media (max-width:960px) {
+      .hero {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* Ad Screen (16:9) */
+    .screen {
+      aspect-ratio: 16/9;
+      background: #0b1220;
+      border-radius: var(--radius);
+      overflow: hidden;
+      position: relative;
+      box-shadow: var(--shadow);
+      border: 1px solid rgba(255, 255, 255, .06)
+    }
+
+    .screen::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(1200px 600px at 95% 110%, rgba(255, 255, 255, .06), transparent 55%),
+        radial-gradient(800px 600px at -10% -20%, rgba(0, 229, 168, .12), transparent 50%);
+    }
+
+    .screen-header {
+      position: absolute;
+      inset: 16px 16px auto 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between
+    }
+
+    .screen-logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 900
+    }
+
+    .screen-badge {
+      width: 30px;
+      height: 30px;
+      border-radius: 9px;
+      background: linear-gradient(135deg, var(--accent), #004d3d)
+    }
+
+    .screen-slogan {
+      opacity: .9;
+      font-weight: 800
+    }
+
+    .screen-media {
+      position: absolute;
+      inset: 0;
+      display: grid;
+      place-items: center;
+      background:
+        conic-gradient(from 200deg at 60% 40%, #0b1220, #0b1220 25%, #13223a 25%, #13223a 50%, #0b1220 50%, #0b1220 75%, #13223a 75%);
+      animation: pan 16s linear infinite;
+    }
+
+    @keyframes pan {
+      to {
+        transform: translate3d(-2%, 0, 0)
+      }
+    }
+
+    .headline {
+      position: absolute;
+      left: 5%;
+      bottom: 10%;
+      font-size: clamp(28px, 5.8vw, 84px);
+      font-weight: 1000;
+      line-height: 1.02
+    }
+
+    .headline .accent {
+      color: var(--accent)
+    }
+
+    .screen-footer {
+      position: absolute;
+      inset: auto 18px 18px 18px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between
+    }
+
+    .qrbox {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 8px 10px;
+      background: rgba(0, 0, 0, .25);
+      border: 1px solid rgba(255, 255, 255, .08);
+      border-radius: 14px;
+      backdrop-filter: blur(6px)
+    }
+
+    .qr {
+      width: 64px;
+      height: 64px;
+      background: conic-gradient(#000, #000) padding-box, repeating-conic-gradient(#000 0 10deg, #fff 10deg 20deg) border-box;
+      border: 10px solid transparent;
+      border-radius: 10px;
+      box-shadow: inset 0 0 0 4px #fff
+    }
+
+    .fine {
+      font-size: 12px;
+      opacity: .75
+    }
+
+    /* Right panel: small previews */
+    .panel {
+      background: linear-gradient(180deg, rgba(14, 23, 41, .7), rgba(14, 23, 41, .35));
+      border: 1px solid rgba(255, 255, 255, .06);
+      border-radius: var(--radius);
+      padding: 18px;
+      box-shadow: var(--shadow)
+    }
+
+    .panel h2 {
+      margin: 0 0 12px;
+      font-size: 20px
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px
+    }
+
+    .mock {
+      aspect-ratio: 16/9;
+      border-radius: 12px;
+      overflow: hidden;
+      position: relative;
+      border: 1px solid rgba(255, 255, 255, .08)
+    }
+
+    .mock .tag {
+      position: absolute;
+      top: 8px;
+      left: 8px;
+      font-size: 12px;
+      padding: 4px 8px;
+      background: rgba(0, 0, 0, .35);
+      border: 1px solid rgba(255, 255, 255, .08);
+      border-radius: 999px
+    }
+
+    .m1 {
+      background: linear-gradient(160deg, #0d1829, #0d1829 50%, #192a46), radial-gradient(800px 500px at -10% 110%, rgba(255, 211, 78, .35), transparent 45%)
+    }
+
+    .m2 {
+      background: radial-gradient(1200px 600px at 100% 100%, rgba(0, 229, 168, .28), transparent 40%), linear-gradient(120deg, #07121e, #0c213b 60%, #0b1220)
+    }
+
+    .m3 {
+      background: conic-gradient(from 210deg at 70% 30%, #0b1220, #11315a, #0b1220)
+    }
+
+    .m4 {
+      background: linear-gradient(135deg, #0b1220, #10213a 60%, #173456)
+    }
+
+    /* Section titles */
+    .section {
+      margin-top: 42px
+    }
+
+    .section h2 {
+      margin: 0 0 14px
+    }
+
+    /* ===== Footer ===== */
+    footer {
+      margin-top: 48px;
+      border-top: 1px solid rgba(255, 255, 255, .08);
+      padding: 28px 0 60px
+    }
+
+    .team {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 14px
+    }
+
+    @media (max-width:960px) {
+      .team {
+        grid-template-columns: repeat(2, 1fr)
+      }
+    }
+
+    @media (max-width:560px) {
+      .team {
+        grid-template-columns: 1fr
+      }
+    }
+
+    .card {
+      background: linear-gradient(180deg, rgba(14, 23, 41, .7), rgba(14, 23, 41, .35));
+      border: 1px solid rgba(255, 255, 255, .06);
+      border-radius: 16px;
+      padding: 16px
+    }
+
+    .role {
+      font-weight: 800;
+      color: #cbd5ff;
+      font-size: 12px;
+      letter-spacing: .4px
+    }
+
+    .name {
+      font-weight: 900;
+      font-size: 18px;
+      margin: 6px 0 8px
+    }
+
+    .info {
+      font-size: 14px;
+      color: var(--muted)
+    }
+
+    .contact {
+      display: flex;
+      gap: 10px;
+      margin-top: 10px
+    }
+
+    .chip {
+      font-size: 12px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      background: #0e1729;
+      border: 1px solid #22314b;
+      color: #cfe1ff
+    }
