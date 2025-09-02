@@ -14,7 +14,7 @@
   <header class="site-header">
     <div class="nav-wrap">
       <div class="brand">
-            <img src="./raw-Photoroom.png" alt="VertScreen Logo">
+            <img src="./VertScreen_logo.png" alt="VertScreen Logo">
         </div>
       <nav class="nav">
         <a href="advertlist">광고 종류</a>
@@ -41,12 +41,12 @@
   <!-- 맵 선택 및 확대 용 인덱스들-->
   <section class="locations">
       <div class="location-grid">
-        <a href="#"><div class="location-card">강남역</div></a>
-        <a href="#"><div class="location-card">홍대입구역</div></a>
-        <a href="#"><div class="location-card">잠실역</div></a>
-        <a href="#"><div class="location-card">서울역</div></a>
-        <a href="#"><div class="location-card">사당역</div></a>
-        <a href="#"><div class="location-card">건대입구역</div></a>
+        <a href="#map" data-lat="37.498095" data-lng="127.027610"><div class="location-card">강남역</div></a>
+        <a href="#map" data-lat="37.55634" data-lng="126.92251"><div class="location-card">홍대입구역</div></a>
+        <a href="#map" data-lat="37.513305" data-lng="127.100100"><div class="location-card">잠실역</div></a>
+        <a href="#map" data-lat="37.554722" data-lng="126.970833"><div class="location-card">서울역</div></a>
+        <a href="#map" data-lat="37.476538" data-lng="126.981544"><div class="location-card">사당역</div></a>
+        <a href="#map" data-lat="37.540408" data-lng="127.070841"><div class="location-card">건대입구역</div></a>
       </div>
     </section>
 
@@ -83,12 +83,12 @@
 
   <br>
 
-  <!--  파티 구성을 위한 홍보 화면-->
+  <!--  파티 구성을 위한 이미지 업로드 및 내용-->
     <div>
     <h2>파티 구성을 위한 이미지 업로드 및 내용</h2>
     <div class="party-ad">
       <div>
-        <img id="imagePreview" src="" alt=""><br><br>
+        <img id="imagePreview" src="./no_image.png" alt=""><br><br>
         <label for="imageInput" class="custom-file-button">이미지 선택</label>
         <input type="file" id="imageInput" accept="image/*">
         <p style="color: red;">※ 첨부된 이미지 파일로 심의 및 광고 이벤트가 진행됩니다.</p>
@@ -114,55 +114,99 @@
   <!--footer end-->
 
 <script>
-  /* 맵의 초기값 */
+  /* 맵의 초기값 : 예정 강남역 */
   const map = new naver.maps.Map('map', {
-    center: new naver.maps.LatLng(36.8151, 127.1139),
-    zoom: 13
+    center: new naver.maps.LatLng(37.498095, 127.027610),
+    zoom: 17
   });
-
+  
   /* 맵의 핀에 따른 정보 입력 */
   let selectedNumber = null;
   const markerData = [
     {
-      position: new naver.maps.LatLng(36.8151, 127.1139),
-      image: 'https://via.placeholder.com/300x200.png?text=Image+1',
-      poster: '천안 시청 근처',
-      text: 'A',
+      position: new naver.maps.LatLng(37.497762, 127.027726),
+      image: './party-make-image/강남/강남_사각기둥1.jpg',
+      poster: '강남역-사각기둥',
+      text: '유동인구가 많은 강남역의 사각기둥입니다.',
       number: 1700000
     },
     {
-      position: new naver.maps.LatLng(36.8200, 127.1200),
-      image: 'https://via.placeholder.com/300x200.png?text=Image+2',
-      poster: '천안역 주변',
-      text: 'A',
-      number: 3000000
+      position: new naver.maps.LatLng(37.497684, 127.026720),
+      image: '/party-make-image/강남/강남_와이드칼라1.jpg',
+      poster: '강남역-와이드칼라1',
+      text: '유동인구가 많은 강남역의 와이드칼라입니다.',
+      number: 3300000
     },
     {
-      position: new naver.maps.LatLng(36.8100, 127.1100),
-      image: 'https://via.placeholder.com/300x200.png?text=Image+3',
-      poster: '천안삼거리공원',
-      text: 'A',
-      number: 2200000
+      position: new naver.maps.LatLng(37.498084, 127.028417),
+      image: '/party-make-image/강남/강남_와이드칼라2.jpg',
+      poster: '강남역-와이드칼라2',
+      text: '유동인구가 많은 강남역의 와이드칼라입니다.',
+      number: 3300000
+    },
+    {
+      position: new naver.maps.LatLng(37.497884, 127.027720),
+      image: './party-make-image/강남/강남_디포1.png',
+      poster: '강남역-디포스테이션1',
+      text: '유동인구가 많은 통로지역의 디지털 포스터입니다. ',
+      number: 1200000
+    },
+    {
+      position: new naver.maps.LatLng(37.498050, 127.027065),
+      image: './party-make-image/강남/강남_디포2.png',
+      poster: '강남역-디포스테이션2',
+      text: '유동인구가 많은 역 입구의 디지털 포스터입니다. ',
+      number: 1100000
     }
   ];
-  
+
+  /* location-card 클릭 이벤트 처리 */
+  document.querySelectorAll(".location-grid a").forEach(link => {
+    link.addEventListener("click", e => {
+
+      const lat = parseFloat(link.getAttribute("data-lat"));
+      const lng = parseFloat(link.getAttribute("data-lng"));
+
+      // 지도 중심 이동 + 줌 조정
+      map.setCenter(new naver.maps.LatLng(lat, lng));
+      map.setZoom(17);
+    });
+  });
+
   /* Calendar */
   document.addEventListener('DOMContentLoaded', function () {
     const calendarEl = document.getElementById('calendar');
+    let selectedDate = null; // 현재 선택된 시작 날짜
+    let selectedEvents = []; // 생성된 이벤트들 저장
 
     const calendar = new FullCalendar.Calendar(calendarEl, {
-      initialView: 'dayGridMonth', // 월간 뷰
-      locale: 'ko',                // 한국어 설정
-      selectable: true,            // 날짜 선택 가능하게
+      initialView: 'dayGridMonth',
+      locale: 'ko',
+      selectable: true,
       dateClick: function(info) {
-        // 여기에 원하는 동작 추가
+        // 같은 날짜 다시 클릭 → 선택 해제
+        if (selectedDate === info.dateStr) {
+          selectedEvents.forEach(event => event.remove());
+          selectedEvents = [];
+          selectedDate = null;
+          return;
+        }
+
+        // 기존 선택 제거
+        if (selectedEvents.length > 0) {
+          selectedEvents.forEach(event => event.remove());
+          selectedEvents = [];
+        }
+
+        // 새로운 날짜 선택
+        selectedDate = info.dateStr;
+        const startDate = new Date(info.date);
       }
     });
     calendar.render();
   });
 
-  
-
+  /* 파티 구성 방식 선택 로직 */
   markerData.forEach(data => {
     const marker = new naver.maps.Marker({
       position: data.position,
@@ -170,8 +214,8 @@
     });
 
     naver.maps.Event.addListener(marker, 'click', () => {
-        // 인원수 입력 초기화
         document.getElementById('info-box').style.display = 'flex';
+        // 인원수 입력 0으로 초기화
         document.getElementById('headcount').value = 0
         document.getElementById('info-img').src = data.image;
         document.getElementById('info-poster').textContent = `광고판명: ${data.poster}`;
