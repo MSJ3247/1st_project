@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <link rel="stylesheet" href="./VertScreen_mainStyle.css">
+        <title>광고 종류</title>
+        <style>
+            h1 {text-align: center;}
+            h2 {text-align: center;}
+            img {margin: 10px; width: 900px; height: 600px; }
+            .poster {width: 900px; height: 600px; }
+
+            .poster img {
+            display: block;
+            width: 100%;
+            height: auto;
+            margin: 20px auto;
+            border-radius: 16px;
+            box-shadow: 0 6px 18px rgba(0,0,0,0.2);
+            transition: transform .3s ease;
+            }
+
+            .poster img:hover {
+            transform: scale(1.02);
+            }
+
+            body {
+            background: linear-gradient(to bottom, #0f172a, #1e293b);
+            color: #e2e8f0;
+            font-family: "Noto Sans KR", sans-serif;
+            }
+
+            /* 버튼을 감싸는 컨테이너: 중앙 정렬 */
+            .cta-wrap {
+            display: flex;
+            justify-content: center;
+            margin: 40px 0;   /* 위아래 여백 */
+            }
+
+            /* CTA 버튼 */
+            .cta-btn {
+            display: block;
+            margin: 40px auto;
+            width: 300px;              /* 버튼 가로 크기 (필요하면 더 크게 조절) */
+            padding: 18px 0;           /* 세로 여백 */
+            font-size: 20px;
+            font-weight: 900;
+            border: none;
+            border-radius: var(--radius);
+            background: var(--accent);
+            color: #fff;
+            cursor: pointer;
+            box-shadow: 0 8px 24px rgba(29,161,242,0.4);
+            transition: all .3s ease;
+            text-align: center;
+            }
+
+            /* hover & active 효과 */
+            .cta-btn:hover {
+            background: var(--accent-2);
+            transform: translateY(-3px);
+            box-shadow: 0 12px 32px rgba(56,189,248,0.45);
+            }
+
+            .cta-btn:active {
+            transform: translateY(0);
+            box-shadow: 0 6px 18px rgba(29,161,242,0.35);
+            }
+
+            main.poster {
+                max-width: 1200px; 
+                margin: 0 auto; 
+                padding: 20px;
+              }
+
+
+        </style>
+    </head>
+    <body>
+        <header class="site-header">
+            <div class="nav-wrap">
+            <div class="brand">
+            <img src="./raw-Photoroom.png" alt="VertScreen Logo">
+            </div>
+      <nav class="nav">
+        <a href="advertlist">광고 종류</a>
+        <a href="#">브랜드 가치</a>
+        <a href="#">파티 모집</a>
+        <a href="#">광고 제안</a>
+        <a href="#">리뷰 게시판</a>
+      </nav>
+        <div class="spacer"></div>
+        <div class="actions">
+        <button class="btn">로그인</button>
+        <button class="btn primary">회원가입</button>
+      </div>
+    </div>
+  </header>
+        <main class="poster">
+        <h1>와이드컬러 조명</h1><hr><br>
+        <img src="./와이드칼라광고.jpg"><br>
+        <img src="./와이드칼라광고2.jpg"><br>
+        <h1>디지털 포스터 광고</h1><hr><br>
+        <img src="./디지털포스터 광고.jpg"><br>
+        <img src="./디지털포스터 광고2.jpg"><br>
+        <h1>사각 기둥 광고</h1><hr><br>
+        <img src="./사각기둥광고.jpg"><br>
+        <img src="./사각기둥광고2.jpg"><br>
+        <h2>다양한 장소 및 포스터 종류를 제공합니다.(임시)</h2>
+        <a href="#"><button class="cta-btn">파티 모집하러 가기</button></a>
+        </main>
+    </body>
+</html>
