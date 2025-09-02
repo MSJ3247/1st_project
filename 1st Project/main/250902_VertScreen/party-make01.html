@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>마커 클릭 정보 표시</title>
+  <link rel="stylesheet" href="./VertScreen_mainStyle.css" />
+  <link rel="stylesheet" href="./party-make01.css">
+  <script src="https://openapi.map.naver.com/openapi/v3/maps.js?ncpKeyId=pq3dgwzbry"></script>
+  <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.css" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js"></script>
+</head>
+<body>
+  <!--header-->
+  <header class="site-header">
+    <div class="nav-wrap">
+      <div class="brand">
+            <img src="./raw-Photoroom.png" alt="VertScreen Logo">
+        </div>
+      <nav class="nav">
+        <a href="advertlist">광고 종류</a>
+        <a href="#">브랜드 가치</a>
+        <a href="#">파티 모집</a>
+        <a href="#">광고 제안</a>
+        <a href="#">리뷰 게시판</a>
+      </nav>
+      <div class="spacer"></div>
+      <div class="actions">
+        <button class="btn">로그인</button>
+        <button class="btn primary">회원가입</button>
+      </div>
+    </div>
+  </header>
+  <!--header end-->
+
+  <!-- 네이버 맵 화면, 캘린더-->
+  <div class="map-and-calendar">
+    <div id="map"></div>
+    <div id="calendar"></div>
+  </div>
+
+  <!-- 맵 선택 및 확대 용 인덱스들-->
+  <section class="locations">
+      <div class="location-grid">
+        <a href="#"><div class="location-card">강남역</div></a>
+        <a href="#"><div class="location-card">홍대입구역</div></a>
+        <a href="#"><div class="location-card">잠실역</div></a>
+        <a href="#"><div class="location-card">서울역</div></a>
+        <a href="#"><div class="location-card">사당역</div></a>
+        <a href="#"><div class="location-card">건대입구역</div></a>
+      </div>
+    </section>
+
+  <!-- 네이버 맵 상세 -->
+  <div id="info-box">
+    <img id="info-img" src="" alt="이미지">
+    <div class="info-text-wrap">
+      <p id="info-poster">광고판명 : -</p>
+      <p id="info-text">설명 : -</p>
+      <p id="info-amount">가격 : -</p>
+    </div>
+  </div>
+  <br>
+  
+  <!-- 파티 구성 방식 선택(금액 분할) -->
+    <h2>파티 구성 방식 선택(금액 분할)</h2>
+    <div class="select-box">
+          <span><input type="radio" class="select-radio" name="contact" value="pament1" checked />1 / n 분할 + 인원 수 설정</span>
+          <span><input type="radio" class="select-radio" name="contact" value="pament2" />자유 결제식</span>
+    </div>
+    <div class="select-amount-description">
+      <!-- 1/ n 분할 + 인원 수 설정-->
+      <div id="n-description">
+        <p>설정 인원수를 입력하시면 입력한 인원 수 만큼 1 / n 분할로 금액을 결제하도록 합니다. <br>
+        목표 인원 수 만큼의 금액 달성 후에 파티장이 마지막으로 파티 마감을 누르면 이벤트가 진행됩니다.</p>
+      <div id="setcount"><strong>인원 수 설정  </strong><input type="number" name="headcount" id="headcount" min="0" value="" placeholder="위 맵에서 광고 장소를 선택해주세요" disabled/></div>
+      <span id="info-peramount"><p>1인당 예상 결제 금액 : <span class="per-amount"></span></p></span>
+    </div>
+      <!--자유 결제식-->
+      <div id="free-description">
+        <p>파티에 참가하고자 하는 인원이 자유롭게 결제 금액을 후원 할 수 있습니다. 목표 금액을 달성하면 이벤트가 진행됩니다.</p>
+      </div>
+    </div>
+
+  <br>
+
+  <!--  파티 구성을 위한 홍보 화면-->
+    <div>
+    <h2>파티 구성을 위한 이미지 업로드 및 내용</h2>
+    <div class="party-ad">
+      <div>
+        <img id="imagePreview" src="" alt=""><br><br>
+        <label for="imageInput" class="custom-file-button">이미지 선택</label>
+        <input type="file" id="imageInput" accept="image/*">
+        <p style="color: red;">※ 첨부된 이미지 파일로 심의 및 광고 이벤트가 진행됩니다.</p>
+      </div>
+      <div class="info-text-wrap">
+        <textarea id="textTitle" placeholder="제목을 입력하세요."></textarea>
+        <textarea id="textInput" placeholder="내용을 입력하세요."></textarea>
+      </div>
+    </div>
+    </div>
+    
+  <!-- 파티 구성 / 취소 버튼 -->
+  <div class="pnc-btn">
+    <a href="#"><button class="make-party" onclick="signup()">파티 구성</button></a>
+    <a href="#"><button class="cancel">취소</button></a>
+  </div>
+
+  <!--footer start-->
+  <footer>
+    <div></div>
+    <div></div>
+  </footer>
+  <!--footer end-->
+
+<script>
+  /* 맵의 초기값 */
+  const map = new naver.maps.Map('map', {
+    center: new naver.maps.LatLng(36.8151, 127.1139),
+    zoom: 13
+  });
+
+  /* 맵의 핀에 따른 정보 입력 */
+  let selectedNumber = null;
+  const markerData = [
+    {
+      position: new naver.maps.LatLng(36.8151, 127.1139),
+      image: 'https://via.placeholder.com/300x200.png?text=Image+1',
+      poster: '천안 시청 근처',
+      text: 'A',
+      number: 1700000
+    },
+    {
+      position: new naver.maps.LatLng(36.8200, 127.1200),
+      image: 'https://via.placeholder.com/300x200.png?text=Image+2',
+      poster: '천안역 주변',
+      text: 'A',
+      number: 3000000
+    },
+    {
+      position: new naver.maps.LatLng(36.8100, 127.1100),
+      image: 'https://via.placeholder.com/300x200.png?text=Image+3',
+      poster: '천안삼거리공원',
+      text: 'A',
+      number: 2200000
+    }
+  ];
+  
+  /* Calendar */
+  document.addEventListener('DOMContentLoaded', function () {
+    const calendarEl = document.getElementById('calendar');
+
+    const calendar = new FullCalendar.Calendar(calendarEl, {
+      initialView: 'dayGridMonth', // 월간 뷰
+      locale: 'ko',                // 한국어 설정
+      selectable: true,            // 날짜 선택 가능하게
+      dateClick: function(info) {
+        // 여기에 원하는 동작 추가
+      }
+    });
+    calendar.render();
+  });
+
+  
+
+  markerData.forEach(data => {
+    const marker = new naver.maps.Marker({
+      position: data.position,
+      map: map
+    });
+
+    naver.maps.Event.addListener(marker, 'click', () => {
+        // 인원수 입력 초기화
+        document.getElementById('info-box').style.display = 'flex';
+        document.getElementById('headcount').value = 0
+        document.getElementById('info-img').src = data.image;
+        document.getElementById('info-poster').textContent = `광고판명: ${data.poster}`;
+        document.getElementById('info-text').textContent = `설명: ${data.text}`;
+        document.getElementById('info-amount').textContent = `가격: ${data.number.toLocaleString()} 원`;
+        selectedNumber = data.number;
+        // 인원수 입력란 활성화
+        document.getElementById('headcount').disabled = false;
+        document.getElementById('headcount').placeholder = "";
+        console.log('선택된 숫자:', selectedNumber);
+      });
+  });
+
+
+/* 라디오 셀렉트 박스  */
+    const radios = document.querySelectorAll('input[name="contact"]');
+    const freeDesc = document.getElementById('free-description');
+    const perAmount = document.querySelector('.per-amount');
+    const setcount = document.getElementById('setcount');
+    const splitText = freeDesc.previousElementSibling; // 1/n 설명 div
+
+  function updateDisplay() {
+    const selected = document.querySelector('input[name="contact"]:checked').value;
+
+    if (selected === 'pament1') {
+      // 1/n 분할 선택 시
+      freeDesc.style.display = 'none';
+      splitText.style.display = 'block';
+      setcount.style.display = 'block';
+      perAmount.parentElement.style.display = 'block';
+    } else {
+      // 자유 결제식 선택 시
+      freeDesc.style.display = 'block';
+      splitText.style.display = 'none';
+      setcount.style.display = 'none';
+      perAmount.parentElement.style.display = 'none';
+    }
+  }
+  // 초기 상태 설정
+  updateDisplay();
+
+  // 라디오 버튼 변경 시 UI 업데이트
+  radios.forEach(radio => {
+    radio.addEventListener('change', updateDisplay);
+  });  
+
+
+  /* (1 / n) 분할 + 설정된 인원수 대로 1인 예상 결제액 표시 */
+  const perAmountSpan = document.querySelector('.per-amount');
+  const headcountInput = document.getElementById('headcount');
+  
+  headcountInput.addEventListener('input', () => {
+    if (selectedNumber && headcountInput.value > 0) {
+      const perAmount = Math.floor(selectedNumber / headcountInput.value);
+      perAmountSpan.textContent = perAmount.toLocaleString() + " 원";
+    } else {
+      perAmountSpan.textContent = "-";
+    }
+  });
+
+  /* 유저가 업로드한 이미지 실시간 표시 */
+  document.getElementById('imageInput').addEventListener('change', function(event) {
+    const file = event.target.files[0];
+    const reader = new FileReader();
+
+    reader.onload = function(e) {
+      document.getElementById('imagePreview').src = e.target.result;
+    };
+
+    if (file) {
+      reader.readAsDataURL(file); // 이미지 파일을 Base64로 변환
+    }
+  });
+</script>
+</body>
+</html>
