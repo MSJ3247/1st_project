@@ -44,7 +44,6 @@
       </div>
     </div>
   </header>
-
   <main>
     <div class="screen">
       <div class="headline"><span class="accent">원하는</span>
@@ -60,28 +59,24 @@
       </div>
       </div>
   </main>
-
   <footer>
     <p><strong>Project A P M</strong></p>
     <p>대표자  채희수</p>
     <p>이메일 dooly123@naver.com</p>
     <p>연락처 010 1234 5678</p>
   </footer>
-
   <script>
     const profile = document.getElementById("profile");
     const dropdown = document.getElementById("dropdown");
     const authArea = document.getElementById("authArea");
-
+    
     profile.addEventListener("click", () => {
       dropdown.style.display = dropdown.style.display === "block" ? "none" : "block";
     });
-
     function logout() {
       localStorage.removeItem("currentUser");
       location.reload();
     }
-
     window.onload = () => {
       const currentUser = localStorage.getItem("currentUser");
       if (currentUser) {
@@ -91,19 +86,9 @@
         document.getElementById("welcomeMsg").innerText = currentUser + "님 환영합니다!";
       }
     };
-
     window.addEventListener("click", (e) => {
       if (!profile.contains(e.target)) {
         dropdown.style.display = "none";
-      }
-    });
-    const reviewLink = document.getElementById("reviewLink");
-
-      reviewLink.addEventListener("click", function(e) {
-      const currentUser = localStorage.getItem("currentUser");
-      if (!currentUser) {  // 로그인 안 됨
-      e.preventDefault(); // 링크 이동 막기
-      alert("로그인 후 이용 가능합니다.");
       }
     });
   </script>
