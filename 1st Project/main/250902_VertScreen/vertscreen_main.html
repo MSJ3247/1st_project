@@ -4,7 +4,6 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <link rel="stylesheet" href="./VertScreen_mainStyle.css">
-  <link rel="stylesheet" href="./header.css">
   <title>VertScreen</title>
   <style>
     /* 프로필 드롭다운 */
@@ -20,26 +19,26 @@
     <div class="nav-wrap">
       <div class="brand">
         <a href="./vertscreen_main.html">
-        <img src="./VertScreen_logo.png" alt="VertScreen Logo">
+        <img src="./raw-Photoroom.png" alt="VertScreen Logo">
         </a>
       </div>
       <nav class="nav">
         <a href="./vertscreen_advertlist.html">광고 종류</a>
         <a href="./vertscreen_brand.html">브랜드 가치</a>
-        <a href="#">파티 모집</a>
+        <a href="./party-make01.html">파티 모집</a>
         <a href="#">광고 제안</a>
-        <a href="review.html">리뷰 게시판</a>
+        <a href="./review.html" id="reviewLink">리뷰 게시판</a>
       </nav>
       <div class="spacer"></div>
       <div class="actions" id="authArea">
         <a href="login.html" class="btn">로그인</a>
-        <a href="login.html?mode=signup" class="btn primary">회원가입</a>
+        <a href="login.html" class="btn primary">회원가입</a>
       </div>
       <div class="profile" id="profile">
         <div class="avatar" id="avatar">U</div>
         <div class="dropdown" id="dropdown">
           <div style="padding:12px;color:var(--muted)" id="welcomeMsg">사용자님 환영합니다!</div>
-          <a href="#">마이페이지</a>
+          <a href="./myPage.html">마이페이지</a>
           <button onclick="logout()">로그아웃</button>
         </div>
       </div>
@@ -54,17 +53,12 @@
   </main>
   <main>
     <!-- 광고 가능한 위치 -->
-    <section class="locations">
       <h2>광고 가능한 위치</h2>
-      <div class="location-grid">
-        <div class="location-card">강남역</div>
-        <div class="location-card">홍대입구역</div>
-        <div class="location-card">잠실역</div>
-        <div class="location-card">서울역</div>
-        <div class="location-card">사당역</div>
-        <div class="location-card">건대입구역</div>
+      <div class="station-info">
+      <div class="scroll-text">
+      강남역 · 홍대입구역 · 잠실역 · 서울역 · 사당역 · 건대입구역
       </div>
-    </section>
+      </div>
   </main>
 
   <footer>
@@ -101,6 +95,15 @@
     window.addEventListener("click", (e) => {
       if (!profile.contains(e.target)) {
         dropdown.style.display = "none";
+      }
+    });
+    const reviewLink = document.getElementById("reviewLink");
+
+      reviewLink.addEventListener("click", function(e) {
+      const currentUser = localStorage.getItem("currentUser");
+      if (!currentUser) {  // 로그인 안 됨
+      e.preventDefault(); // 링크 이동 막기
+      alert("로그인 후 이용 가능합니다.");
       }
     });
   </script>
