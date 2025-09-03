@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>파티 상세 페이지</title>
+  <link rel="stylesheet" href="./VertScreen_mainStyle.css" />
+  <link rel="stylesheet" href="./party-make01.css">
+  <script src="https://oapi.map.naver.com/openapi/v3/maps.js?ncpKeyId=pq3dgwzbry"></script>
+  <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.css" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js"></script>
+</head>
+<body>
+  <!-- header -->
+  <header class="site-header">
+    <div class="nav-wrap">
+      <div class="brand"><img src="./VertScreen_logo.png" alt="VertScreen Logo"></div>
+      <nav class="nav">
+        <a href="advertlist">광고 종류</a>
+        <a href="#">브랜드 가치</a>
+        <a href="#">파티 모집</a>
+        <a href="#">광고 제안</a>
+        <a href="#">리뷰 게시판</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- 지도 -->
+  <div class="map" id="detail-map" style="width:1220px;height:400px;margin:20px auto;border-radius:8px;"></div>
+
+  <br> 
+
+  <!-- 선택한 광고 정보 -->
+  <h2>선택한 광고 상세 정보</h2>
+  <div class="party-ad">
+    <div>
+      <img id="detail-map-img" src="./no_image.png" alt="선택된 광고 이미지" style="width:600px;height:400px;border-radius:8px;">
+    </div>
+    <div class="info-text-wrap">
+      <p id="detail-poster">광고판명 : -</p>
+      <p id="detail-text">설명 : -</p>
+      <p id="detail-amount">가격 : -</p>
+      <p id="detail-date">선택한 날짜 : -</p>
+      <p id="detail-headcount">인원 수 : -</p>
+      <p id="detail-peramount">1인당 예상 결제 금액 : -</p>
+    </div>
+  </div>
+
+  <br>
+
+  <!-- 업로드 이미지 & 제목/내용 -->
+  <h2>파티 내용</h2>
+  <div class="party-ad">
+    <div>
+      <img id="detail-upload-img" src="./no_image.png" alt="업로드 이미지" style="width:600px;height:400px;border-radius:8px;">
+    </div>
+    <div class="info-text-wrap">
+      <h3 id="detail-title">제목 : -</h3>
+      <p id="detail-content">내용 : -</p>
+    </div>
+  </div>
+
+  <div class="pnc-btn">
+    <button class="make-party">참여하기</button>
+    <button class="cancel">뒤로가기</button> <!-- 파티 모집 게시판으로 이동 -->
+  </div>
+
+  <script>
+    const partyData = JSON.parse(localStorage.getItem("partyData"));
+    if (partyData) {
+      // 지도 표시
+      const map = new naver.maps.Map('detail-map', {
+        center: new naver.maps.LatLng(partyData.lat, partyData.lng),
+        zoom: 17
+      });
+      new naver.maps.Marker({
+        position: new naver.maps.LatLng(partyData.lat, partyData.lng),
+        map: map
+      });
+
+      // 정보 표시
+      document.getElementById("detail-map-img").src = partyData.mapImg;
+      document.getElementById("detail-poster").textContent = "광고판명 : " + partyData.poster;
+      document.getElementById("detail-text").textContent = "설명 : " + partyData.text;
+      document.getElementById("detail-amount").textContent = "가격 : " + partyData.amount.toLocaleString() + " 원";
+      document.getElementById("detail-date").textContent = "선택한 날짜 : " + partyData.date + " ~ (한달간)";
+      document.getElementById("detail-headcount").textContent = "참여 가능 인원 수 : " + partyData.headcount;
+      document.getElementById("detail-peramount").textContent = "1인당 예상 결제 금액 : " + partyData.perAmount;
+      document.getElementById("detail-upload-img").src = partyData.uploadImg;
+      document.getElementById("detail-title").textContent = "제목 : " + partyData.title;
+      document.getElementById("detail-content").textContent = "내용 : " + partyData.content;
+
+      // 결제 방식 조건 처리
+      if (partyData.paymentType === "pament1") {
+        document.getElementById("detail-headcount").style.display = "block";
+        document.getElementById("detail-peramount").style.display = "block";
+      } else {
+        document.getElementById("detail-headcount").style.display = "none";
+        document.getElementById("detail-peramount").style.display = "none";
+      }
+    }
+  </script>
+</body>
+</html>
