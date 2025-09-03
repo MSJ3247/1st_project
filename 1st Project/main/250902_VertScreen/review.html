@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>리뷰 게시판 - VertScreen</title>
   <link rel="stylesheet" href="./VertScreen_mainStyle.css">
-  <link rel="stylesheet" href="./header.css">
   <style>
     main {
       max-width: 1000px;
@@ -48,24 +47,19 @@
       margin: 20px 0;
     }
     .page-btn {
-      padding: 8px 14px;
+      padding: 6px 10px;
       border: 1px solid var(--line);
-      border-radius: var(--radius);
+      border-radius: 6px;
       background: var(--panel);
-      color: var(--text);
-      font-weight: bold;
       cursor: pointer;
-      transition: all 0.2s ease;
     }
-    .page-btn:hover {
+    .page-btn.active {
       background: var(--accent);
       color: #000;
-      transform: translateY(-2px);
+      font-weight: bold;
     }
-    .page-btn:active {
-      transform: translateY(0);
-      background: var(--accent-2);
-      color: #000;
+    .page-btn:hover {
+      background: rgba(29,161,242,0.5);
     }
 
     /* 검색바 */
@@ -96,51 +90,30 @@
       border-radius: var(--radius);
       font-weight: bold;
       cursor: pointer;
-      transition: background 0.2s ease;
     }
     .write-review button:hover {
       background: var(--accent-2);
     }
-
-    /* 프로필 드롭다운 */
-    .profile { position:relative; display:none; align-items:center; cursor:pointer; }
-    .avatar { width:36px; height:36px; border-radius:50%; background:var(--accent); display:flex; align-items:center; justify-content:center; font-weight:800; color:#000; }
-    .dropdown { display:none; position:absolute; top:48px; right:0; background:var(--panel); border:1px solid var(--line); border-radius:var(--radius); overflow:hidden; min-width:140px; box-shadow: var(--shadow);}
-    .dropdown a, .dropdown button { display:block; width:100%; padding:12px; background:none; border:none; color:var(--text); text-align:left; cursor:pointer; font-size:14px; }
-    .dropdown a:hover, .dropdown button:hover { background:#22314b; }
   </style>
 </head>
 <body>
   <header class="site-header">
     <div class="nav-wrap">
       <div class="brand">
-        <a href="./vertscreen_main.html">
-          <img src="./VertScreen_logo.png" alt="VertScreen Logo">
-        </a>
+      <a href="./vertscreen_main.html">
+      <img src="./raw-Photoroom.png" alt="VertScreen_logo">
+      </a>
       </div>
       <nav class="nav">
-        <a href="./vertscreen_advertlist.html">광고 종류</a>
-        <a href="./vertscreen_brand.html">브랜드 가치</a>
-        <a href="#">파티 모집</a>
-        <a href="#">광고 제안</a>
-        <a href="review.html">리뷰 게시판</a>
+      <a href="./vertscreen_advertlist.html">광고 종류</a>
+      <a href="./vertscreen_brand.html">브랜드가치</a>
+      <a href="./party-make01.html">파티 모집</a>
+      <a href="#">광고 제안</a>
+      <a href="review.html">리뷰 게시판</a>
       </nav>
       <div class="spacer"></div>
-      <div class="actions" id="authArea">
-        <a href="login.html" class="btn">로그인</a>
-        <a href="login.html?mode=signup" class="btn primary">회원가입</a>
-      </div>
-      <div class="profile" id="profile">
-        <div class="avatar" id="avatar">U</div>
-        <div class="dropdown" id="dropdown">
-          <div style="padding:12px;color:var(--muted)" id="welcomeMsg">사용자님 환영합니다!</div>
-          <a href="myPage.html">마이페이지</a>
-          <button onclick="logout()">로그아웃</button>
-        </div>
-      </div>
     </div>
   </header>
-
   <main>
     <h2>리뷰 게시판</h2>
 
@@ -148,13 +121,7 @@
     <div class="review-list" id="reviewList"></div>
 
     <!-- 페이지네이션 -->
-    <div class="pagination">
-      <button class="page-btn">&lt;</button>
-      <button class="page-btn">1</button>
-      <button class="page-btn">2</button>
-      <button class="page-btn">3</button>
-      <button class="page-btn">&gt;</button>
-    </div>
+    <div class="pagination" id="pagination"></div>
 
     <!-- 검색바 -->
     <div class="search-bar">
@@ -163,79 +130,123 @@
 
     <!-- 리뷰 작성 버튼 -->
     <div class="write-review">
-      <button onclick="alert('리뷰 작성 페이지로 이동합니다.');">리뷰하기</button>
+      <button onclick="goToWriteReview()">리뷰하기</button>
     </div>
   </main>
-
   <footer>
     <p><strong>Project A P M</strong></p>
     <p>대표자 채희수</p>
     <p>이메일 dooly123@naver.com</p>
     <p>연락처 010 1234 5678</p>
   </footer>
-
   <script>
     const reviewListElement = document.getElementById('reviewList');
+    const paginationElement = document.getElementById('pagination');
     const searchInput = document.getElementById('searchInput');
 
-    // 프로필 및 인증 처리
-    const profile = document.getElementById("profile");
-    const dropdown = document.getElementById("dropdown");
-    const authArea = document.getElementById("authArea");
+    const itemsPerPage = 5;
+    let currentPage = 1;
+    let reviews = [];
+    let filteredReviews = [];
 
-    profile.addEventListener("click", () => {
-      dropdown.style.display = dropdown.style.display === "block" ? "none" : "block";
-    });
-
-    function logout() {
-      localStorage.removeItem("currentUser");
-      location.reload();
+    // 마이페이지에서 저장된 참여 파티 목록 불러오기
+    function loadParties() {
+      const storedParties = JSON.parse(localStorage.getItem('userParties')) || [
+        { name: '파티 1 - 강남역 광고팀' },
+        { name: '파티 2 - 홍대입구 광고팀' }
+      ];
+      reviews = storedParties.map((party, index) => ({
+        id: index + 1,
+        title: party.name
+      }));
+      filteredReviews = [...reviews];
+      renderReviews();
     }
 
-    window.onload = () => {
-      const currentUser = localStorage.getItem("currentUser");
-      if (currentUser) {
-        authArea.style.display = "none";
-        profile.style.display = "flex";
-        document.getElementById("avatar").innerText = currentUser.charAt(0).toUpperCase();
-        document.getElementById("welcomeMsg").innerText = currentUser + "님 환영합니다!";
-      }
-    };
-
-    window.addEventListener("click", (e) => {
-      if (!profile.contains(e.target)) {
-        dropdown.style.display = "none";
-      }
-    });
-
-    // 참여중인 파티 목록 불러오기
-    const parties = JSON.parse(localStorage.getItem('userParties')) || [
-      { name: '파티 1 - 강남역 광고팀' },
-      { name: '파티 2 - 홍대입구 광고팀' },
-      { name: '파티 3 - 신촌 광고팀' }
-    ];
-
-    // 리뷰 목록 렌더링
-    function renderReviews(filter = '') {
+    // 리뷰 리스트 렌더링
+    function renderReviews() {
       reviewListElement.innerHTML = '';
-      parties
-        .filter(party => party.name.toLowerCase().includes(filter.toLowerCase()))
-        .forEach(party => {
-          const div = document.createElement('div');
-          div.className = 'review-item';
-          div.textContent = party.name;
-          div.onclick = () => alert(`${party.name} 상세 화면으로 이동`);
-          reviewListElement.appendChild(div);
-        });
+      const start = (currentPage - 1) * itemsPerPage;
+      const end = start + itemsPerPage;
+      const pageItems = filteredReviews.slice(start, end);
+
+      if (pageItems.length === 0) {
+        reviewListElement.innerHTML = '<p>리뷰가 없습니다.</p>';
+        return;
+      }
+
+      pageItems.forEach(item => {
+        const div = document.createElement('div');
+        div.className = 'review-item';
+        div.textContent = item.title;
+        div.onclick = () => goToReviewDetail(item.id);
+        reviewListElement.appendChild(div);
+      });
+
+      renderPagination();
     }
 
-    // 검색 이벤트
+    // 페이지네이션 렌더링
+    function renderPagination() {
+      paginationElement.innerHTML = '';
+      const totalPages = Math.ceil(filteredReviews.length / itemsPerPage);
+
+      // 이전 버튼
+      const prevBtn = document.createElement('button');
+      prevBtn.className = 'page-btn';
+      prevBtn.textContent = '<';
+      prevBtn.disabled = currentPage === 1;
+      prevBtn.onclick = () => { currentPage--; renderReviews(); };
+      paginationElement.appendChild(prevBtn);
+
+      // 페이지 번호
+      for (let i = 1; i <= totalPages; i++) {
+        const pageBtn = document.createElement('button');
+        pageBtn.className = 'page-btn' + (i === currentPage ? ' active' : '');
+        pageBtn.textContent = i;
+        pageBtn.onclick = () => { currentPage = i; renderReviews(); };
+        paginationElement.appendChild(pageBtn);
+      }
+
+      // 다음 버튼
+      const nextBtn = document.createElement('button');
+      nextBtn.className = 'page-btn';
+      nextBtn.textContent = '>';
+      nextBtn.disabled = currentPage === totalPages;
+      nextBtn.onclick = () => { currentPage++; renderReviews(); };
+      paginationElement.appendChild(nextBtn);
+    }
+
+    // 검색 기능
     searchInput.addEventListener('input', () => {
-      renderReviews(searchInput.value);
+      const keyword = searchInput.value.toLowerCase();
+      filteredReviews = reviews.filter(review =>
+        review.title.toLowerCase().includes(keyword)
+      );
+      currentPage = 1;
+      renderReviews();
     });
 
-    // 초기 표시
-    renderReviews();
+      // 상세 리뷰로 이동
+      function goToReviewDetail(id) {
+        alert(`리뷰 상세 페이지로 이동: 리뷰 ID ${id}`);
+        // window.location.href = `reviewDetail.html?id=${id}`;
+      }
+
+      function goToWriteReview() {
+      const currentUser = localStorage.getItem("currentUser");
+      if (!currentUser) {
+        alert("로그인이 필요한 기능입니다.");
+        window.location.href = "login.html"; // 로그인 페이지로 이동
+        return;
+      }
+      // 로그인 된 경우 → 리뷰 작성 페이지 이동
+      window.location.href = "reviewWrite.html";
+    }
+
+    // 초기화
+    loadParties();
+
   </script>
 </body>
 </html>
