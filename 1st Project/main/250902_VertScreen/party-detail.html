@@ -13,10 +13,11 @@
   <!-- header -->
   <header class="site-header">
     <div class="nav-wrap">
-      <div class="brand"><img src="./VertScreen_logo.png" alt="VertScreen Logo"></div>
+      <div class="brand"><a href="./vertscreen_main.html">
+        <img src="raw-Photoroom.png" alt="VertScreen Logo"></div></a>
       <nav class="nav">
-        <a href="advertlist">광고 종류</a>
-        <a href="#">브랜드 가치</a>
+        <a href="vertscreen_advertlist.html">광고 종류</a>
+        <a href="vertscreen_brand.html">브랜드 가치</a>
         <a href="#">파티 모집</a>
         <a href="#">광고 제안</a>
         <a href="#">리뷰 게시판</a>
@@ -65,7 +66,7 @@
   </div>
 
   <script>
-    const partyData = JSON.parse(localStorage.getItem("partyData"));
+    let partyData = JSON.parse(localStorage.getItem("partyData"));
     if (partyData) {
       // 지도 표시
       const map = new naver.maps.Map('detail-map', {
@@ -98,6 +99,26 @@
         document.getElementById("detail-peramount").style.display = "none";
       }
     }
+    function joinParty() {
+    let partyData = JSON.parse(localStorage.getItem("partyData"));
+    let currentUser = localStorage.getItem("currentUser");
+
+    if (!partyData.participants.includes(currentUser)) {
+      partyData.participants.push(currentUser);
+      localStorage.setItem("partyData", JSON.stringify(partyData));
+      alert("참여 완료!");
+      location.reload(); // 새로고침해서 반영
+    } else {
+      alert("이미 참여했습니다!");
+    }
+  }
+  let current = partyData.participants.length;
+  let total = partyData.headcount;
+  let progress = Math.round((current / total) * 100);
+
+  document.getElementById("detail-headcount").textContent =
+    `${current} / ${total}명 참여중 (${progress}%)`;
+
   </script>
 </body>
 </html>
