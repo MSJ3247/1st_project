@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <title>리뷰 상세 - VertScreen</title>
+    <link rel="stylesheet" href="./VertScreen_mainStyle.css">
+    <style>
+        main {
+            max-width: 800px;
+            margin: 40px auto;
+            padding: 20px;
+        }
+
+        .review-header {
+            margin-bottom: 20px;
+            border-bottom: 1px solid var(--line);
+            padding-bottom: 10px;
+        }
+
+        .review-content {
+            margin-bottom: 30px;
+            font-size: 16px;
+            line-height: 1.6;
+        }
+
+        .review-form textarea {
+            width: 100%;
+            min-height: 60px;
+            padding: 10px;
+            border: 1px solid var(--line);
+            border-radius: var(--radius);
+            margin-bottom: 10px;
+            resize: vertical;
+            background: var(--panel);
+            color: var(--text);
+        }
+
+        .review-form button {
+            background: var(--accent);
+            color: #000;
+            padding: 8px 16px;
+            border-radius: var(--radius);
+            font-weight: bold;
+            cursor: pointer;
+            border: none;
+        }
+
+        .review-form button:hover {
+            background: var(--accent-2);
+        }
+
+        /* 별점 */
+        .stars {
+            display: flex;
+            gap: 5px;
+            margin-bottom: 10px;
+            cursor: pointer;
+        }
+
+        .star {
+            font-size: 24px;
+            color: #ccc;
+            transition: color 0.2s;
+        }
+
+        .star.selected {
+            color: gold;
+        }
+
+        /* 리뷰 테이블 */
+        table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            margin-bottom: 20px;
+            border: 1px solid var(--line);
+            border-radius: var(--radius);
+            overflow: hidden;
+        }
+
+        th,
+        td {
+            border-bottom: 1px solid var(--line);
+            padding: 10px;
+            text-align: left;
+            background: #1a2235;
+        }
+
+        th {
+            background: var(--panel);
+            font-weight: bold;
+        }
+
+        /* 게시판 초기화 버튼 (푸터 구석) */
+        #resetBtn {
+            position: fixed;
+            bottom: 10px;
+            right: 10px;
+            padding: 6px 12px;
+            background: #e74c3c;
+            color: white;
+            border: none;
+            border-radius: var(--radius);
+            cursor: pointer;
+            font-size: 12px;
+            opacity: 0.7;
+            transition: opacity 0.3s;
+            z-index: 1000;
+        }
+
+        #resetBtn:hover {
+            opacity: 1;
+        }
+
+        /* 테이블 버튼 영역 */
+        .table-buttons {
+            display: flex;
+            justify-content: flex-end;
+            /* 테이블 우측 정렬 */
+            gap: 6px;
+            margin-top: 8px;
+        }
+
+        /* 테이블 버튼 스타일 */
+        .table-buttons button {
+            padding: 6px 12px;
+            background: var(--accent);
+            color: #000;
+            border: none;
+            border-radius: var(--radius);
+            font-size: 12px;
+            font-weight: bold;
+            cursor: pointer;
+            opacity: 0.85;
+            transition: all 0.3s ease;
+        }
+
+        .table-buttons button:hover {
+            opacity: 1;
+            background: var(--accent-2);
+        }
+
+        .table-buttons button:active {
+            transform: scale(0.95);
+        }
+
+        .btn:hover {
+            border-color: var(--accent);
+            background: rgba(29, 161, 242, 0.1);
+            transition: all 0.2s;
+        }
+    </style>
+</head>
+
+<body>
+    <header class="site-header">
+        <div class="nav-wrap">
+            <div class="brand">
+                <img src="./VertScreen_logo.png" alt="VertScreen_logo">
+            </div>
+            <div class="spacer"></div>
+            <div class="actions">
+                <a href="review.html" class="btn">목록으로</a>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <div class="review-header">
+            <h2 id="reviewTitle">리뷰 상세</h2>
+        </div>
+        <div class="review-content" id="reviewContent">
+            이 파티에 대한 리뷰 상세 페이지입니다.
+        </div>
+
+        <!-- 리뷰 목록 -->
+        <div class="review-list" id="reviewList">
+            <table>
+                <thead>
+                    <tr>
+                        <th>별점</th>
+                        <th>리뷰 내용</th>
+                    </tr>
+                </thead>
+                <tbody id="reviewTableBody"></tbody>
+            </table>
+            <div class="table-buttons">
+                <button id="loadMoreBtn" style="display:none;">더보기</button>
+                <button id="collapseBtn" style="display:none;">축소</button>
+            </div>
+
+        </div>
+
+        <!-- 리뷰 작성 -->
+        <div class="review-form" id="reviewFormSection">
+            <h3>리뷰 작성</h3>
+            <div class="stars" id="starContainer"></div>
+            <textarea id="reviewText" placeholder="리뷰를 입력하세요"></textarea>
+            <button onclick="saveReview()">등록</button>
+        </div>
+    </main>
+
+    <footer>
+        <p><strong>Project A P M</strong></p>
+        <p>대표자 채희수</p>
+        <p>이메일 dooly123@naver.com</p>
+        <p>연락처 010 1234 5678</p>
+    </footer>
+
+    <!-- 게시판 초기화 버튼 -->
+    <button id="resetBtn">게시판 초기화</button>
+
+    <script>
+        const params = new URLSearchParams(window.location.search);
+        const partyName = params.get('party');
+        const reviewTableBody = document.getElementById('reviewTableBody');
+
+        let selectedRating = 0;
+        const starContainer = document.getElementById('starContainer');
+        for (let i = 1; i <= 5; i++) {
+            const star = document.createElement('span');
+            star.className = 'star';
+            star.innerHTML = '★';
+            star.onclick = () => {
+                selectedRating = i;
+                document.querySelectorAll('.star').forEach((s, idx) => {
+                    s.classList.toggle('selected', idx < i);
+                });
+            };
+            starContainer.appendChild(star);
+        }
+
+        let loadedCount = 0;
+        const LOAD_BATCH = 5;
+        let sortedReviews = [];
+
+        function loadReviews() {
+            const reviews = JSON.parse(localStorage.getItem('reviews') || '[]');
+            sortedReviews = reviews
+                .filter(r => r.party === partyName)
+                .sort((a, b) => b.timestamp - a.timestamp);
+
+            reviewTableBody.innerHTML = "";
+            loadedCount = 0;
+            loadMore();
+        }
+
+        function loadMore() {
+            const slice = sortedReviews.slice(loadedCount, loadedCount + LOAD_BATCH);
+            slice.forEach(r => {
+                const tr = document.createElement('tr');
+                const tdRating = document.createElement('td');
+                const tdContent = document.createElement('td');
+                tdRating.textContent = '⭐'.repeat(r.rating);
+                tdContent.textContent = r.content;
+                tr.appendChild(tdRating);
+                tr.appendChild(tdContent);
+                reviewTableBody.appendChild(tr);
+            });
+
+            loadedCount += slice.length;
+            document.getElementById('loadMoreBtn').style.display =
+                loadedCount < sortedReviews.length ? 'inline-block' : 'none';
+            document.getElementById('collapseBtn').style.display =
+                loadedCount > LOAD_BATCH ? 'inline-block' : 'none';
+        }
+
+        function saveReview() {
+            const text = document.getElementById('reviewText').value.trim();
+            if (!text) {
+                alert("리뷰를 입력해주세요.");
+                return;
+            }
+            if (selectedRating === 0) {
+                alert("별점을 선택해주세요.");
+                return;
+            }
+
+            // 등록 확인 알림 추가
+            if (!confirm("리뷰를 등록하시겠습니까?")) {
+                return; // 사용자가 취소하면 등록하지 않음
+            }
+
+            const reviews = JSON.parse(localStorage.getItem('reviews') || '[]');
+            reviews.push({
+                party: partyName,
+                content: text,
+                rating: selectedRating,
+                timestamp: Date.now()
+            });
+            localStorage.setItem('reviews', JSON.stringify(reviews));
+
+            alert("리뷰가 성공적으로 등록되었습니다.");
+
+            document.getElementById('reviewText').value = "";
+            selectedRating = 0;
+            document.querySelectorAll('.star').forEach(s => s.classList.remove('selected'));
+
+            loadReviews();
+        }
+
+        document.getElementById('loadMoreBtn').addEventListener('click', loadMore);
+        document.getElementById('collapseBtn').addEventListener('click', loadReviews);
+
+        if (partyName) {
+            document.getElementById('reviewTitle').innerText = partyName;
+            document.getElementById('reviewContent').innerText =
+                `${partyName}에 대한 리뷰 상세 페이지입니다.`;
+        }
+
+        document.getElementById('resetBtn').addEventListener('click', () => {
+            if (confirm("이 파티의 리뷰를 모두 삭제하시겠습니까?")) {
+                let reviews = JSON.parse(localStorage.getItem('reviews') || '[]');
+                reviews = reviews.filter(r => r.party !== partyName);
+                localStorage.setItem('reviews', JSON.stringify(reviews));
+                loadReviews();
+                alert("리뷰 게시판이 초기화되었습니다.");
+            }
+        });
+
+        window.onload = () => {
+            loadReviews();
+
+            // ✅ 로그인 여부 확인
+            const currentUser = localStorage.getItem("currentUser");
+            const reviewFormSection = document.getElementById("reviewFormSection");
+
+            if (!currentUser) {
+                // 로그인 안 된 경우 리뷰 작성 숨김
+                reviewFormSection.style.display = "none";
+
+                // 안내 메시지 추가
+                const msg = document.createElement("p");
+                msg.innerText = "리뷰 작성은 로그인 후 이용 가능합니다.";
+                msg.style.color = "gray";
+                msg.style.textAlign = "center";
+                reviewFormSection.parentNode.insertBefore(msg, reviewFormSection);
+            }
+        };
+
+    </script>
+</body>
+
+</html>

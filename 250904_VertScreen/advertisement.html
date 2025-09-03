@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>마커 클릭 정보 표시</title>
+  <link rel="stylesheet" href="./VertScreen_mainStyle.css" />
+  <link rel="stylesheet" href="./advertisement.css">
+  <script src="https://oapi.map.naver.com/openapi/v3/maps.js?ncpKeyId=pq3dgwzbry"></script>
+  <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.css" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js"></script>
+</head>
+<body>
+  <!--header-->
+  <header class="site-header">
+    <div class="nav-wrap">
+      <div class="brand">
+        <img src="./VertScreen_logo.png" alt="VertScreen Logo">
+      </div>
+      <nav class="nav">
+        <a href="advertlist">광고 종류</a>
+        <a href="#">브랜드 가치</a>
+        <a href="#">파티 모집</a>
+        <a href="#">광고 제안</a>
+        <a href="#">리뷰 게시판</a>
+      </nav>
+      <div class="spacer"></div>
+      <div class="actions">
+        <button class="btn">로그인</button>
+        <button class="btn primary">회원가입</button>
+      </div>
+    </div>
+  </header>
+  <!--header end-->
+
+  <!-- 네이버 맵 화면 -->
+  <section id="naver-map-section">
+  <h2>네이버 맵</h2>
+  <div id="map"></div>
+  </section>
+  <!-- 광고주가 찍을 마크 입력 받는곳-->
+  <div class="address-search">
+  <input type="text" id="address" placeholder="주소를 입력하세요">
+  <button onclick="searchAddress()">검색</button>
+  </div>
+
+  <!--  파티 구성을 위한 이미지 업로드 및 내용-->
+    <div>
+    <h2>광고 제안을 위한 이미지 업로드 및 내용</h2>
+    <div class="party-ad">
+      <div>
+        <img id="imagePreview" src="./no_image.png" alt=""><br><br>
+        <label for="imageInput" class="custom-file-button">이미지 선택</label>
+        <input type="file" id="imageInput" accept="image/*">
+        <p style="color: red;">※ 첨부된 이미지 파일로 심의 및 광고 이벤트가 진행됩니다.</p>
+      </div>
+      <div class="info-text-wrap">
+        <textarea id="textTitle" placeholder="금액을 입력하세요."></textarea>
+        <textarea id="textInput" placeholder="내용을 입력하세요."></textarea>
+      </div>
+    </div>
+    </div>
+    
+    <!-- ⑥⑦ 제안/취소 버튼 -->
+    <section class="pnc-btn">
+      <button class="make-party" onclick="signup()">제안 시작</button>
+      <button class="cancel">취소</button>
+    </section>
+
+  <!--footer start-->
+  <footer>
+    <div></div>
+    <div></div>
+  </footer>
+  <!--footer end-->
+
+<script>
+  /* 맵의 초기값 : 예정 강남역 */
+  const map = new naver.maps.Map('map', {
+    center: new naver.maps.LatLng(37.498095, 127.027610),
+    zoom: 17
+  });
+  
+  /* 맵의 핀에 따른 정보 입력 */
+
+// 초기 지도 중심에 기본 마커 생성 (원하면)
+ let marker = new naver.maps.Marker({
+  position: new naver.maps.LatLng(37.498095, 127.027610),
+  map: map
+});
+  /* location-card 클릭 이벤트 처리 */
+  document.querySelectorAll(".location-grid a").forEach(link => {
+    link.addEventListener("click", e => {
+
+      const lat = parseFloat(link.getAttribute("data-lat"));
+      const lng = parseFloat(link.getAttribute("data-lng"));
+
+      // 지도 중심 이동 + 줌 조정
+      map.setCenter(new naver.maps.LatLng(lat, lng));
+      map.setZoom(17);
+    });
+  });
+
+  /* 파티 구성 방식 선택 로직 */
+  let markerData = [];
+
+    naver.maps.Event.addListener(marker, 'click', () => {
+        document.getElementById('info-box').style.display = 'flex';
+        // 인원수 입력 0으로 초기화
+        document.getElementById('headcount').value = 0
+        document.getElementById('info-img').src = data.image;
+        document.getElementById('info-poster').textContent = `광고판명: ${data.poster}`;
+        document.getElementById('info-text').textContent = `설명: ${data.text}`;
+        document.getElementById('info-amount').textContent = `가격: ${data.number.toLocaleString()} 원`;
+        
+        selectedNumber = data.number;
+        selectedMarkerLat = data.position.lat();
+        selectedMarkerLng = data.position.lng();
+
+        // 인원수 입력란 활성화
+        document.getElementById('headcount').disabled = false;
+        document.getElementById('headcount').placeholder = "";
+        console.log('선택된 숫자:', selectedNumber);
+      });
+
+  function searchAddress() {
+  const address = document.getElementById("address").value.trim();
+  if (!address) {
+    alert("주소를 입력해주세요.");
+    return;
+  }
+
+  naver.maps.Service.geocode({ query: address }, function(status, response) {
+    if (status !== naver.maps.Service.Status.OK) {
+      alert("주소 검색 실패");
+      return;
+    }
+
+    const result = response.v2.addresses[0];
+    if (!result) {
+      alert("검색 결과가 없습니다.");
+      return;
+    }
+
+    const lat = parseFloat(result.y);
+    const lng = parseFloat(result.x);
+    const position = new naver.maps.LatLng(lat, lng);
+
+    // 지도 이동
+    map.setCenter(position);
+    map.setZoom(17);
+
+    // 기존 마커 제거
+    if (marker) {
+      marker.setMap(null);
+    }
+
+    // 새 마커 생성
+    marker = new naver.maps.Marker({
+      position: position,
+      map: map
+    });
+  });
+}
+
+/* 라디오 셀렉트 박스  */
+    const radios = document.querySelectorAll('input[name="contact"]');
+    const freeDesc = document.getElementById('free-description');
+    const perAmount = document.querySelector('.per-amount');
+    const setcount = document.getElementById('setcount');
+    const splitText = freeDesc.previousElementSibling; // 1/n 설명 div
+
+  function updateDisplay() {
+    const selected = document.querySelector('input[name="contact"]:checked').value;
+
+    if (selected === 'pament1') {
+      // 1/n 분할 선택 시
+      freeDesc.style.display = 'none';
+      splitText.style.display = 'block';
+      setcount.style.display = 'block';
+      perAmount.parentElement.style.display = 'block';
+    } else {
+      // 자유 결제식 선택 시
+      freeDesc.style.display = 'block';
+      splitText.style.display = 'none';
+      setcount.style.display = 'none';
+      perAmount.parentElement.style.display = 'none';
+    }
+  }
+  // 초기 상태 설정
+  updateDisplay();
+
+  // 라디오 버튼 변경 시 UI 업데이트
+  radios.forEach(radio => {
+    radio.addEventListener('change', updateDisplay);
+  });  
+
+  /* (1 / n) 분할 + 설정된 인원수 대로 1인 예상 결제액 표시 */
+  const perAmountSpan = document.querySelector('.per-amount');
+  const headcountInput = document.getElementById('headcount');
+
+  headcountInput.addEventListener('input', () => {
+    if (selectedNumber && headcountInput.value > 0) {
+      const perAmount = Math.floor(selectedNumber / headcountInput.value);
+      perAmountSpan.textContent = perAmount.toLocaleString() + " 원";
+    } else {
+      perAmountSpan.textContent = "-";
+    }
+  });
+
+  /* 유저가 업로드한 이미지 실시간 표시 */
+  document.getElementById('imageInput').addEventListener('change', function(event) {
+    const file = event.target.files[0];
+    const reader = new FileReader();
+
+    reader.onload = function(e) {
+      document.getElementById('imagePreview').src = e.target.result;
+    };
+
+    if (file) {
+      reader.readAsDataURL(file); // 이미지 파일을 Base64로 변환
+    }
+  });
+
+/* 파티 구성 -> 페이지 정보 저장해서 데이터 전송 */
+/* signup 함수 */
+  function signup(){
+    // 맵 선택 필수
+    if (!selectedNumber) {
+      alert("광고 위치(맵)를 선택해주세요.");
+      document.getElementById("map").scrollIntoView();
+      return;
+    }
+
+    const selectedRadio = document.querySelector('input[name="contact"]:checked').value;
+
+    // 1/n 분할일 경우 추가 필수값
+    if (selectedRadio === "pament1") {
+      if (!document.getElementById("headcount").value || document.getElementById("headcount").value <= 0) {
+        alert("인원수를 입력해주세요.");
+        document.getElementById("headcount").focus();
+        return;
+      }
+      if (!document.getElementById("textTitle").value.trim()) {
+        alert("제목을 입력해주세요.");
+        document.getElementById("textTitle").focus();
+        return;
+      }
+      if (!document.getElementById("textInput").value.trim()) {
+        alert("내용을 입력해주세요.");
+        document.getElementById("textInput").focus();
+        return;
+      }
+      if (document.getElementById("imagePreview").src.includes("no_image.png")) {
+        alert("이미지를 업로드해주세요.");
+        document.getElementById("imageInput").click();
+        return;
+      }
+    }
+
+    // 데이터 저장
+    const data = {
+      lat: selectedMarkerLat,
+      lng: selectedMarkerLng,
+      mapImg: document.getElementById("info-img").src,
+      poster: document.getElementById("info-poster").textContent.replace("광고판명: ", ""),
+      text: document.getElementById("info-text").textContent.replace("설명: ", ""),
+      amount: selectedNumber,
+      headcount: document.getElementById("headcount").value,
+      perAmount: document.querySelector(".per-amount").textContent,
+      uploadImg: document.getElementById("imagePreview").src,
+      title: document.getElementById("textTitle").value,
+      content: document.getElementById("textInput").value,
+      paymentType: selectedRadio
+    };
+    localStorage.setItem("partyData", JSON.stringify(data));
+    window.location.href = "party-detail.html";
+  }
+</script>
+</body>
+</html>
