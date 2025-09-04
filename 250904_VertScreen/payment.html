@@ -5,15 +5,41 @@
   <title>결제 페이지</title>
   <link rel="stylesheet" href="VertScreen_mainStyle.css">
   <link rel="stylesheet" href="payment.css">
+  <style>
+    /* ▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼ 추가된 부분 ▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼ */
+    .progress-bar {
+      width: 100%;
+      height: 10px;
+      background: #1e293b;
+      border-radius: 10px;
+      overflow: hidden;
+      position: relative;
+    }
+    .progress-fill {
+      height: 100%;
+      width: 0;
+      background: linear-gradient(90deg, #1DA1F2, #38BDF8, #60A5FA);
+      background-size: 200% 100%;
+      animation: fillWater 2s ease forwards, shimmer 3s linear infinite;
+      border-radius: 10px;
+    }
+    @keyframes fillWater {
+      from { width: 0; }
+      to { width: var(--target-width); }
+    }
+    @keyframes shimmer {
+      from { background-position: 200% 0; }
+      to { background-position: 0% 0; }
+    }
+    /* ▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲ 추가된 부분 ▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲ */
+  </style>
 </head>
 <body>
   <div class="container">
     <h2>결제 진행</h2>
 
-    <!-- 광고판/금액 정보 -->
     <div class="info-box" id="payment-info"></div>
 
-    <!-- 진행률 바 -->
     <div class="progress-wrap">
       <div class="progress-label">
         <span id="progress-text">0%</span>
@@ -24,14 +50,12 @@
       </div>
     </div>
 
-    <!-- 결제 수단 -->
     <label for="payment-method">결제 수단</label>
     <select id="payment-method">
       <option value="card">신용/체크카드</option>
       <option value="account">계좌이체</option>
     </select>
 
-    <!-- 카드/계좌 입력 폼 -->
     <div id="payment-form"></div>
 
     <button class="btn" onclick="completePayment()">결제하기</button>
@@ -67,14 +91,17 @@ infoBox.innerHTML = `
   <p><strong>총 금액 :</strong> ${totalAmount.toLocaleString()} 원</p>
   <p><strong>현재 참여 인원 :</strong> ${paidCount} 명</p>
   <p><strong>참여 가능 인원 수 :</strong> ${headcount} 명</p>
-  <p><strong>1인당 결제 금액 :</strong> 
+  <p><strong>1인당 결제 금액 :</strong>
       <span style="color:var(--accent-2); font-weight:700;">
         ${perAmount.toLocaleString()} 원
       </span>
     </p>
 `;
 
-document.getElementById("progress-fill").style.width = progress + "%";
+// ▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼ 수정된 부분 ▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼
+const progressFill = document.getElementById("progress-fill");
+progressFill.style.setProperty('--target-width', `${progress}%`);
+// ▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲ 수정된 부분 ▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲
 document.getElementById("progress-text").textContent = progress + "%";
 document.getElementById("remain-text").textContent = `남은 금액: ${remainAmount.toLocaleString()} 원`;
 
@@ -90,11 +117,11 @@ function updateForm() {
     if (method === "card") {
       paymentForm.innerHTML = `
         <label>카드 번호</label>
-        <input type="text" placeholder="0000-0000-0000-0000" maxlength="19">
+        <input type="text" id="card-number" placeholder="0000-0000-0000-0000" maxlength="19">
         <label>유효기간</label>
-        <input type="text" placeholder="MM/YY" maxlength="5">
+        <input type="text" id="card-expiry" placeholder="MM/YY" maxlength="5">
         <label>CVC</label>
-        <input type="text" placeholder="123" maxlength="3">
+        <input type="text" id="card-cvc" placeholder="123" maxlength="3">
       `;
     } else if (method === "account") {
       paymentForm.innerHTML = `
@@ -112,6 +139,19 @@ function updateForm() {
   }
 // 결제 완료
 function completePayment() {
+  const selectedMethod = document.getElementById("payment-method").value;
+
+  if (selectedMethod === "card") {
+    const cardNumber = document.getElementById("card-number").value;
+    const cardExpiry = document.getElementById("card-expiry").value;
+    const cardCvc = document.getElementById("card-cvc").value;
+
+    if (!cardNumber || !cardExpiry || !cardCvc) {
+      alert("카드 번호, 유효기간, CVC를 모두 입력해주세요.");
+      return;
+    }
+  }
+  
   if (!post.paidParticipants) {
     post.paidParticipants = [];
   }
