@@ -5,109 +5,57 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>파티 모집</title>
   <link rel="stylesheet" href="./VertScreen_mainStyle.css">
-  <style>
-    main {
-      max-width: 800px;
-      margin: 40px auto;
-      padding: 0 20px;
-    }
-    h1 {
-      font-size: 2rem;
-      font-weight: 900;
-      margin-bottom: 30px;
-    }
-    .ad-list {
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-      margin-bottom: 30px;
-    }
-    .ad-item {
-      background: var(--panel);
-      border: 1px solid var(--line);
-      border-radius: var(--radius);
-      padding: 14px;
-      font-weight: 700;
-      cursor: pointer;
-      transition: all 0.25s ease;
-    }
-    .ad-item:hover {
-      border-color: var(--accent);
-      background: rgba(29,161,242,0.1);
-    }
-    .pagination {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      gap: 8px;
-      margin-bottom: 20px;
-    }
-    .pagination button {
-      padding: 6px 12px;
-      border: 1px solid var(--line);
-      border-radius: 8px;
-      background: var(--panel);
-      color: var(--text);
-      cursor: pointer;
-    }
-    .pagination button.active {
-      background: var(--accent);
-      color: #fff;
-      border-color: var(--accent);
-    }
-    .proposal {
-      display: flex;
-      gap: 10px;
-      align-items: center;
-    }
-    .proposal input[type="text"] {
-      flex: 1;
-      padding: 10px 14px;
-      border-radius: var(--radius);
-      border: 1px solid var(--line);
-      background: var(--panel);
-      color: var(--text);
-    }
-    .proposal button {
-      padding: 10px 18px;
-      border-radius: var(--radius);
-      border: none;
-      background: var(--accent);
-      color: #fff;
-      font-weight: 700;
-      cursor: pointer;
-    }
-  </style>
+  <link rel="stylesheet" href="./party-board.css">
 </head>
 <body>
   <!--header-->
   <header class="site-header">
     <div class="nav-wrap">
       <div class="brand">
-        <a href="./vertscreen_main.html"><img src="./VertScreen_logo.png" alt="VertScreen Logo"></a>
+        <a href="./vertscreen_main.html">
+        <img src="./VertScreen_logo.png" alt="VertScreen Logo">
+        </a>
       </div>
       <nav class="nav">
         <a href="./vertscreen_advertlist.html">광고 종류</a>
         <a href="./vertscreen_brand.html">브랜드 가치</a>
-        <a href="./party-make01.html">파티 모집</a>
-        <a href="./advertisement.html">광고 제안</a>
-        <a href="./review.html">리뷰 게시판</a>
+        <a href="./party-board.html">파티 모집</a>
+        <a href="#">광고 제안</a>
+        <a href="./review.html" id="reviewLink">리뷰 게시판</a>
       </nav>
       <div class="spacer"></div>
       <div class="actions" id="authArea">
         <a href="login.html" class="btn">로그인</a>
         <a href="login.html" class="btn primary">회원가입</a>
       </div>
+      <div class="profile" id="profile">
+        <div class="avatar" id="avatar">U</div>
+        <div class="dropdown" id="dropdown">
+          <div style="padding:12px;color:var(--muted)" id="welcomeMsg">사용자님 환영합니다!</div>
+          <a href="./myPage.html">마이페이지</a>
+          <button onclick="logout()">로그아웃</button>
+        </div>
+      </div>
     </div>
   </header>
+  <!--header end-->
 
   <main>
     <h1>파티 모집 게시판</h1>
 
     <div class="ad-list">
-      <div class="ad-item">파티 2</div>
-      <div class="ad-item">파티 1</div>
-    </div>
+
+    <a href="./party-detail-hardcoding1.html">
+      <div class="ad-item">
+        [고길동] - 제목: 희동이 생일기념 파티 (100/100) - 2025. 05. 31
+        <div class="progress-wrap" style="margin-top:8px;">
+        <div class="progress-bar" style="width:100%; background:#eee; border-radius:8px; overflow:hidden; height:10px;">
+        <div class="progress-fill" style="width:100%; background:#1da1f2; height:100%;"></div>
+        </div>
+        <small>진행률: 100%</small>
+        </div>
+      </div>
+    </a>
 
     <div class="pagination">
       <button>&laquo;</button>
@@ -134,30 +82,102 @@
 
   <!--스크립트-->
   <script>
-  // 로컬스토리지 저장값 불러오기
-  const partyData = JSON.parse(localStorage.getItem("partyData"));
-  const adList = document.querySelector(".ad-list");
+  /* 프로필 */
+  const profile = document.getElementById("profile");
+  const dropdown = document.getElementById("dropdown");
+  const authArea = document.getElementById("authArea");
 
-  if (partyData) {
+  profile.addEventListener("click", () => {
+    dropdown.style.display = dropdown.style.display === "block" ? "none" : "block";
+  });
+    function logout() {
+      localStorage.removeItem("currentUser");
+      location.reload();
+      window.location.href = "vertscreen_main.html";
+    }
+    window.onload = () => {
+      const currentUser = localStorage.getItem("currentUser");
+      if (currentUser) {
+        authArea.style.display = "none";
+        profile.style.display = "flex";
+        document.getElementById("avatar").innerText = currentUser.charAt(0).toUpperCase();
+        document.getElementById("welcomeMsg").innerText = currentUser + "님 환영합니다!";
+      }
+    };
+    window.addEventListener("click", (e) => {
+      if (!profile.contains(e.target)) {
+        dropdown.style.display = "none";
+      }
+    });
+    window.onload = () => {
+    const currentUser = localStorage.getItem("currentUser");
+    if (currentUser) {
+      authArea.style.display = "none";
+      profile.style.display = "flex";
+      document.getElementById("avatar").innerText = currentUser.charAt(0).toUpperCase();
+      document.getElementById("welcomeMsg").innerText = currentUser + "님 환영합니다!";
+    }
+
+    // 보호할 링크들
+    const protectedLinks = [
+      document.querySelector('a[href="./party-make01.html"]'),
+      document.querySelector('a[href="./party-detail.html"]'),
+      document.querySelector('a[href="./party-board.html"]'),
+      document.querySelector('a[href="./payment.html"]'),
+      document.querySelector('a[href="./advertisement.html"]'),
+      document.querySelector('a[href="./advertisement_detail.html"]')   
+    ];
+
+    protectedLinks.forEach(link => {
+      link.addEventListener("click", (e) => {
+        if (!currentUser) {
+          e.preventDefault();
+          alert("로그인이 필요합니다.");
+          window.location.href = "login.html";
+        }
+      });
+    });
+  };
+
+  const adList = document.querySelector(".ad-list");
+  const partyList = JSON.parse(localStorage.getItem("partyList")) || [];
+  
+  // 작성일(createdAt) 기준 내림차순 정렬 (최신글 맨 위)
+  partyList.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+
+  partyList.forEach(post => {
     const newItem = document.createElement("div");
     newItem.classList.add("ad-item");
-    newItem.textContent = `${partyData.title} (${partyData.currentMember}/${partyData.maxMember}) - ${new Date(partyData.createdAt).toLocaleDateString()}`;
 
-    // 클릭 시 상세페이지 이동
-    newItem.addEventListener("click", () => {
-      window.location.href = "party-detail.html";
-    });
+    let totalAmount = post.amount;
+    let headcount = post.headcount;
+    let perAmount = Math.floor(totalAmount / headcount);
+    let paidCount = post.paidParticipants ? post.paidParticipants.length : 0;
+    let paidAmount = paidCount * perAmount;
+    let progress = Math.min(100, Math.round((paidAmount / totalAmount) * 100));
 
-    // 기존 아이템들을 배열로 가져오기
-    const existingItems = Array.from(adList.children);
-    console.log(existingItems);
+  newItem.innerHTML = `
+    <div class="post-info">
+      [${post.author}] - 제목: ${post.title} 
+      (${paidCount}/${headcount}) - 
+      ${new Date(post.createdAt).toLocaleDateString()}
+    </div>
+    <div class="progress-wrap" style="margin-top:8px;">
+      <div class="progress-bar" style="width:100%; background:#eee; border-radius:8px; overflow:hidden; height:10px;">
+        <div class="progress-fill" style="width:${progress}%; background:#1da1f2; height:100%;"></div>
+      </div>
+      <small>진행률: ${progress}%</small>
+    </div>
+  `;
+  
+  newItem.addEventListener("click", () => {
+    localStorage.setItem("selectedParty", JSON.stringify(post));
+    window.location.href = "party-detail.html";
+  });
 
-    // 최대 6개 유지: 새 아이템 추가 후 초과되면 마지막 제거
-    adList.prepend(newItem);
-    if (existingItems.length >= 6) {
-      adList.removeChild(adList.lastElementChild);
-    }
-  }
+  // 기존 파티1, 파티2보다 위쪽에 추가
+  adList.insertBefore(newItem, adList.firstChild);
+});
   </script>
 </body>
 </html>

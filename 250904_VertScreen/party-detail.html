@@ -21,8 +21,8 @@
       <nav class="nav">
         <a href="./vertscreen_advertlist.html">광고 종류</a>
         <a href="./vertscreen_brand.html">브랜드 가치</a>
-        <a href="./party-make01.html">파티 모집</a>
-        <a href="./listTest.html">광고 제안</a>
+        <a href="./party-board.html">파티 모집</a>
+        <a href="./advertisement.html">광고 제안</a>
         <a href="./review.html" id="reviewLink">리뷰 게시판</a>
       </nav>
       <div class="spacer"></div>
@@ -94,15 +94,12 @@
 
   <div class="pnc-btn">
   <button class="make-party" onclick="joinParty()">참여하기</button>
-  <a href="./party-board.html"><button class="cancel">취소하기</button></a>
+  <a href="./party-board.html"><button class="cancel">돌아가기</button></a>
 </div>
   
 
   <script>
-// 로컬스토리지 저장값 불러오기
-  let partyData = JSON.parse(localStorage.getItem("partyData"));
   /* 프로필 */
-  //로그인 프로필 설정
   const profile = document.getElementById("profile");
   const dropdown = document.getElementById("dropdown");
   const authArea = document.getElementById("authArea");
@@ -140,112 +137,91 @@
 
     // 보호할 링크들
     const protectedLinks = [
-      document.querySelector('a[href="./party-make01.html"]'), //임시
+      document.querySelector('a[href="./party-make01.html"]'),
       document.querySelector('a[href="./party-detail.html"]'),
-      document.querySelector('a[href="./party-main.html"]'),
-      document.querySelector('a[href="./payment.html"]') 
+      document.querySelector('a[href="./party-board.html"]'),
+      document.querySelector('a[href="./payment.html"]'),
+      document.querySelector('a[href="./advertisement.html"]'),
+      document.querySelector('a[href="./advertisement_detail.html"]')  
     ];
 
     protectedLinks.forEach(link => {
       link.addEventListener("click", (e) => {
         if (!currentUser) {
-          e.preventDefault(); // 기본 이동 막기
+          e.preventDefault();
           alert("로그인이 필요합니다.");
-          window.location.href = "login.html"; // 로그인 페이지로 이동
+          window.location.href = "login.html";
         }
       });
     });
   };
 
-    if (partyData) {
-      // 지도 표시
-      const map = new naver.maps.Map('detail-map', {
-        center: new naver.maps.LatLng(partyData.lat, partyData.lng),
-        zoom: 17
-      });
-      new naver.maps.Marker({
-        position: new naver.maps.LatLng(partyData.lat, partyData.lng),
-        map: map
-      });
+    let post = JSON.parse(localStorage.getItem("selectedParty"));
+    let partyList = JSON.parse(localStorage.getItem("partyList")) || [];
 
-      let totalAmount = partyData.amount;       // 광고판 가격(총 지불해야할 금액)
-      let headcount = partyData.headcount;      //  인원수(1/n 선택시)
-      let perAmount = Math.floor(totalAmount / headcount);  // 광고판 가격, 인원수 (1/n 일때)
-      let freeAmount = partyData.freeamount;
-      freeAmount = parseInt(freeAmount);
+    function renderDetail() {
+      if (!post) return;
+      document.getElementById("detail-poster").textContent = "광고판명 : " + post.poster;
+      document.getElementById("detail-text").textContent = "설명 : " + post.text;
+      document.getElementById("detail-amount").textContent = "가격 : " + post.amount.toLocaleString() + " 원";
+      document.getElementById("detail-date").textContent = "선택한 날짜 : " + post.date + " ~ (한달간)";
+      document.getElementById("detail-headcount").textContent = "참여 가능 인원 수 : " + post.headcount;
+      document.getElementById("detail-peramount").textContent = "1인당 예상 결제 금액 : " + post.perAmount;
+      document.getElementById("detail-title").textContent = "제목 : " + post.title;
+      document.getElementById("detail-content").textContent = "내용 : " + post.content;
+      document.getElementById("detail-upload-img").src = post.uploadImg;
+      document.getElementById("detail-map-img").src = post.mapImg;
 
-      // 결제 완료 인원/금액
-      let paidCount = partyData.paidParticipants ? partyData.paidParticipants.length : 0; // 결제 완료 인원
-      let paidAmount = perAmount * paidCount;   // 결제 완료 금액
+      let totalAmount = post.amount;
+      let headcount = post.headcount;
+      let perAmount = Math.floor(totalAmount / post.headcount);
+      let paidCount = post.paidParticipants ? post.paidParticipants.length : 0;
+      let paidAmount = paidCount * perAmount;
       let remainAmount = totalAmount - paidAmount;
+      let remainCount = headcount - paidCount;
       let progress = Math.min(100, Math.round((paidAmount / totalAmount) * 100));
 
-      // 정보 표시
-      document.getElementById("detail-map-img").src = partyData.mapImg;
-      document.getElementById("detail-poster").textContent = "광고판명 : " + partyData.poster;
-      document.getElementById("detail-text").textContent = "설명 : " + partyData.text;
-      document.getElementById("detail-amount").textContent = "가격 : " + partyData.amount.toLocaleString() + " 원";
-      document.getElementById("detail-date").textContent = "선택한 날짜 : " + partyData.date + " ~ (한달간)";
-      document.getElementById("detail-headcount").textContent = "참여 가능 인원 수 : " + partyData.headcount;
-      document.getElementById("detail-peramount").textContent = "1인당 예상 결제 금액 : " + partyData.perAmount;
-      document.getElementById("detail-upload-img").src = partyData.uploadImg;
-      document.getElementById("detail-title").textContent = "제목 : " + partyData.title;
-      document.getElementById("detail-content").textContent = "내용 : " + partyData.content;
-    }
-
-    if (partyData) {
-      // 기본 데이터
-      let totalAmount = partyData.amount; // 광고판 금액
-      let headcount = partyData.headcount; // 모집 인원(1 / n)
-      let perAmount = Math.floor(totalAmount / headcount);
-      let paidCount = partyData.participants ? partyData.participants.length : 0; // 결제된 인원 수
-      let paidAmount = paidCount * perAmount; // 결제 완료 금액
-      let remainAmount = totalAmount - paidAmount; // 남은 금액
-      let remainCount = headcount - paidCount; // 남은 인원 (1 / n)
-      let progress = Math.min(100, Math.round((paidAmount / totalAmount) * 100));
-      console.log(progress);
-      // 진행률 바 업데이트
-      document.getElementById("progress-fill").style.width = progress + "%";
-      document.getElementById("progress-text").textContent = progress + "%";
-      document.getElementById("remain-text").textContent = `남은 금액: ${remainAmount.toLocaleString()} 원`;
-      // HTML 표시
       let paymentDiv = document.getElementById("payment-status");
         paymentDiv.innerHTML = `
         <p>총 광고판 금액 : ${totalAmount.toLocaleString()} 원</p>
-        <p>참여 완료 인원 : ${paidCount} 명</p>
+        <p>결제 완료 인원 : ${paidCount} 명</p>
         <p>남은 인원 수 : ${remainCount} 명</p>
         <p>1인당 결제 금액 : ${perAmount.toLocaleString()} 원</p>
         <p>현재까지 결제 완료 금액 : ${paidAmount.toLocaleString()} 원</p>
         <p>남은 금액 : ${remainAmount.toLocaleString()} 원</p>
       `;
+      document.getElementById("progress-fill").style.width = progress + "%";
+      document.getElementById("progress-text").textContent = "진행률 : " + progress + "%";
+      document.getElementById("remain-text").textContent = "남은 금액: " + remainAmount.toLocaleString() + " 원";
     }
 
-    // 파티 참가
+      const map = new naver.maps.Map('detail-map', {
+        center: new naver.maps.LatLng(post.lat, post.lng),
+        zoom: 17
+      });
+      new naver.maps.Marker({
+        position: new naver.maps.LatLng(post.lat, post.lng),
+        map: map
+      });
+
+    // 참여하기 버튼 → 결제 페이지로 이동
     function joinParty() {
-    let partyData = JSON.parse(localStorage.getItem("partyData"));
-    let currentUser = localStorage.getItem("currentUser");
+      let currentUser = localStorage.getItem("currentUser");
+      if (!currentUser) {
+        alert("로그인이 필요합니다.");
+        return;
+      }
 
-    if (!currentUser) {
-      alert("로그인이 필요합니다.");
-      window.location.href = "login.html";
-      return;
+      if (post.paidParticipants && post.paidParticipants.includes(currentUser)) {
+        alert("이미 결제를 완료했습니다!");
+        return;
+      }
+
+      localStorage.setItem("selectedParty", JSON.stringify(post));
+      window.location.href = "payment.html";
     }
 
-    // participants 배열 초기화
-    if (!partyData.participants) {
-      partyData.participants = [];
-    }
-
-    if (!partyData.participants.includes(currentUser)) {
-      partyData.participants.push(currentUser);
-      localStorage.setItem("partyData", JSON.stringify(partyData));
-      alert("참여 신청 완료! 결제 페이지로 이동합니다.");
-      window.location.href = "payment.html"; // 결제 페이지로 이동
-    } else {
-      alert("이미 참여 신청을 했습니다!");
-    }
-  }
+    renderDetail();
   </script>
 </body>
 </html>
-

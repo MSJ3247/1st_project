@@ -21,8 +21,8 @@
       <nav class="nav">
         <a href="./vertscreen_advertlist.html">광고 종류</a>
         <a href="./vertscreen_brand.html">브랜드 가치</a>
-        <a href="./party-make01.html">파티 모집</a>
-        <a href="./listTest.html">광고 제안</a>
+        <a href="./party-board.html">파티 모집</a>
+        <a href="#">광고 제안</a>
         <a href="./review.html" id="reviewLink">리뷰 게시판</a>
       </nav>
       <div class="spacer"></div>
@@ -155,10 +155,12 @@
 
     // 보호할 링크들
     const protectedLinks = [
-      document.querySelector('a[href="./party-make01.html"]'), //임시
+      document.querySelector('a[href="./party-make01.html"]'),
       document.querySelector('a[href="./party-detail.html"]'),
-      document.querySelector('a[href="./party-main.html"]'),
-      document.querySelector('a[href="./payment.html"]') 
+      document.querySelector('a[href="./party-board.html"]'),
+      document.querySelector('a[href="./payment.html"]'),
+      document.querySelector('a[href="./advertisement.html"]'),
+      document.querySelector('a[href="./advertisement_detail.html"]')   
     ];
 
     protectedLinks.forEach(link => {
@@ -355,7 +357,7 @@
 });
 
 
-  /* 파티 구성 방식 선택 로직 */
+  /* 파티 구성 방식 로직 */
   markerData.forEach(data => {
     const marker = new naver.maps.Marker({
       position: data.position,
@@ -445,33 +447,41 @@
         return;
     }
 
-    const data = {
-      lat: selectedMarkerLat,
-      lng: selectedMarkerLng,
-      mapImg: document.getElementById("info-img").src,
-      poster: document.getElementById("info-poster").textContent.replace("광고판명: ", ""),
-      text: document.getElementById("info-text").textContent.replace("설명: ", ""),
-      amount: selectedNumber,
-      date: selectedDate,
-      headcount: document.getElementById("headcount").value,
-      perAmount: document.querySelector(".per-amount").textContent,
-      uploadImg: document.getElementById("imagePreview").src,
-      title: document.getElementById("textTitle").value,
-      content: document.getElementById("textInput").value,
-      createdAt: new Date().toISOString() // 생성 시간 추가
-    };
-    localStorage.setItem("partyData", JSON.stringify(data));
+  const currentUser = localStorage.getItem("currentUser");
+  if (!currentUser) {
+    alert("로그인이 필요합니다.");
+    return;
+  }
 
-    let partyList = JSON.parse(localStorage.getItem("partyList")) || [];
-    // 새 데이터 추가
-    partyList.unshift(data); // 항상 앞에 추가
+  const data = {
+    lat: selectedMarkerLat,
+    lng: selectedMarkerLng,
+    mapImg: document.getElementById("info-img").src,
+    poster: document.getElementById("info-poster").textContent.replace("광고판명: ", ""),
+    text: document.getElementById("info-text").textContent.replace("설명: ", ""),
+    amount: selectedNumber,
+    date: selectedDate,
+    headcount: parseInt(document.getElementById("headcount").value, 10),
+    perAmount: document.querySelector(".per-amount").textContent,
+    uploadImg: document.getElementById("imagePreview").src,
+    title: document.getElementById("textTitle").value,
+    content: document.getElementById("textInput").value,
+    createdAt: new Date().toISOString(),
+    author: currentUser,
+    participants: [currentUser] // 작성자 본인 기본 참여
+  };
 
-    // 상세 페이지로 이동
-    window.location.href = "party-detail.html";
+  let partyList = JSON.parse(localStorage.getItem("partyList")) || [];
+  partyList.unshift(data);
+  if (partyList.length > 6) partyList = partyList.slice(0, 6);
+
+  localStorage.setItem("partyList", JSON.stringify(partyList));
+
+  // 방금 작성한 글을 선택 상태로 저장
+  localStorage.setItem("selectedParty", JSON.stringify(data));
+
+  window.location.href = "party-detail.html";
   }
 </script>
 </body>
-
 </html>
-
-
