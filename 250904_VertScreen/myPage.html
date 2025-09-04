@@ -58,6 +58,7 @@
       justify-content: space-between;
       font-size: 16px;
       transition: all 0.2s;
+      cursor: pointer; /* 클릭 가능하도록 커서 변경 */
     }
 
     .party-item:hover {
@@ -85,12 +86,11 @@
       gap: 10px;
     }
     
-    /* 금액 텍스트 스타일 */
     .funding-text {
-        margin-left: 15px; /* 진행률 바와의 간격 */
+        margin-left: 15px;
         font-size: 15px;
         color: #bdc3c7;
-        white-space: nowrap; /* 금액이 길어져도 줄바꿈 방지 */
+        white-space: nowrap;
     }
 
     .progress-text {
@@ -119,21 +119,13 @@
 
     /* 애니메이션 */
     @keyframes fillWater {
-      from {
-        width: 0;
-      }
-      to {
-        width: var(--target-width);
-      }
+      from { width: 0; }
+      to { width: var(--target-width); }
     }
 
     @keyframes shimmer {
-      from {
-        background-position: 200% 0;
-      }
-      to {
-        background-position: 0% 0;
-      }
+      from { background-position: 200% 0; }
+      to { background-position: 0% 0; }
     }
 
     /* 리뷰 버튼 */
@@ -202,7 +194,9 @@
       window.location.href = 'login.html';
     }
 
-    function writeReview(partyId) {
+    // 리뷰 작성 기능 (이벤트 버블링 중단 기능 추가)
+    function writeReview(event, partyId) {
+      event.stopPropagation(); // 부모 요소(party-item)의 클릭 이벤트 전파를 막음
       alert(`'${partyId}' 파티의 리뷰 작성 페이지로 이동합니다.`);
       window.location.href = `review_detail.html?party=${partyId}`;
     }
@@ -230,9 +224,10 @@
         let paidAmount = paidCount * perAmount;
         let progress = Math.min(100, Math.round((paidAmount / totalAmount) * 100));
 
-        // 금액 텍스트를 .party-progress 내부에 추가
+        // 파티 아이템에 클릭 이벤트 추가
+        // 리뷰 버튼 클릭 시 event.stopPropagation()이 필요하므로 event 전달
         const partyItemHTML = `
-          <div class="party-item" data-party="${partyData.title}" data-progress="${progress}">
+          <div class="party-item" data-party="${partyData.title}" data-progress="${progress}" onclick="location.href='party-detail.html'">
             <div class="party-info">
               <div class="party-title">${partyData.title}</div>
               <div class="party-progress">
@@ -243,7 +238,7 @@
                 <span class="funding-text">${paidAmount.toLocaleString()} / ${totalAmount.toLocaleString()} 원</span>
               </div>
             </div>
-            <div class="review-btn" onclick="writeReview('${partyData.title}')">리뷰 작성</div>
+            <div class="review-btn" onclick="writeReview(event, '${partyData.title}')">리뷰 작성</div>
           </div>
         `;
         
