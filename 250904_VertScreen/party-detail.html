@@ -28,7 +28,7 @@
       <div class="spacer"></div>
       <div class="actions" id="authArea">
         <a href="login.html" class="btn">로그인</a>
-        <a href="login.html?mode=signup" class="btn primary">회원가입</a>
+        <a href="login.html" class="btn primary">회원가입</a>
       </div>
       <div class="profile" id="profile">
         <div class="avatar" id="avatar">U</div>
@@ -94,11 +94,13 @@
 
   <div class="pnc-btn">
   <button class="make-party" onclick="joinParty()">참여하기</button>
-  <a href="./party-main.html"><button class="cancel">취소하기</button></a>
+  <a href="./party-board.html"><button class="cancel">취소하기</button></a>
 </div>
   
 
   <script>
+// 로컬스토리지 저장값 불러오기
+  let partyData = JSON.parse(localStorage.getItem("partyData"));
   /* 프로필 */
   //로그인 프로필 설정
   const profile = document.getElementById("profile");
@@ -155,10 +157,6 @@
     });
   };
 
-    // 로컬스토리지 저장값 불러오기
-    let partyData = JSON.parse(localStorage.getItem("partyData"));
-    
-
     if (partyData) {
       // 지도 표시
       const map = new naver.maps.Map('detail-map', {
@@ -212,7 +210,6 @@
       document.getElementById("remain-text").textContent = `남은 금액: ${remainAmount.toLocaleString()} 원`;
       // HTML 표시
       let paymentDiv = document.getElementById("payment-status");
-
         paymentDiv.innerHTML = `
         <p>총 광고판 금액 : ${totalAmount.toLocaleString()} 원</p>
         <p>참여 완료 인원 : ${paidCount} 명</p>
@@ -251,4 +248,3 @@
   </script>
 </body>
 </html>
-

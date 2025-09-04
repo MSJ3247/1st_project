@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>파티 모집</title>
+  <link rel="stylesheet" href="./VertScreen_mainStyle.css">
+  <style>
+    main {
+      max-width: 800px;
+      margin: 40px auto;
+      padding: 0 20px;
+    }
+    h1 {
+      font-size: 2rem;
+      font-weight: 900;
+      margin-bottom: 30px;
+    }
+    .ad-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-bottom: 30px;
+    }
+    .ad-item {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.25s ease;
+    }
+    .ad-item:hover {
+      border-color: var(--accent);
+      background: rgba(29,161,242,0.1);
+    }
+    .pagination {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 20px;
+    }
+    .pagination button {
+      padding: 6px 12px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--panel);
+      color: var(--text);
+      cursor: pointer;
+    }
+    .pagination button.active {
+      background: var(--accent);
+      color: #fff;
+      border-color: var(--accent);
+    }
+    .proposal {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+    .proposal input[type="text"] {
+      flex: 1;
+      padding: 10px 14px;
+      border-radius: var(--radius);
+      border: 1px solid var(--line);
+      background: var(--panel);
+      color: var(--text);
+    }
+    .proposal button {
+      padding: 10px 18px;
+      border-radius: var(--radius);
+      border: none;
+      background: var(--accent);
+      color: #fff;
+      font-weight: 700;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <!--header-->
+  <header class="site-header">
+    <div class="nav-wrap">
+      <div class="brand">
+        <a href="./vertscreen_main.html"><img src="./VertScreen_logo.png" alt="VertScreen Logo"></a>
+      </div>
+      <nav class="nav">
+        <a href="./vertscreen_advertlist.html">광고 종류</a>
+        <a href="./vertscreen_brand.html">브랜드 가치</a>
+        <a href="./party-make01.html">파티 모집</a>
+        <a href="./advertisement.html">광고 제안</a>
+        <a href="./review.html">리뷰 게시판</a>
+      </nav>
+      <div class="spacer"></div>
+      <div class="actions" id="authArea">
+        <a href="login.html" class="btn">로그인</a>
+        <a href="login.html" class="btn primary">회원가입</a>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <h1>파티 모집 게시판</h1>
+
+    <div class="ad-list">
+      <div class="ad-item">파티 2</div>
+      <div class="ad-item">파티 1</div>
+    </div>
+
+    <div class="pagination">
+      <button>&laquo;</button>
+      <button class="active">1</button>
+      <button>2</button>
+      <button>3</button>
+      <button>4</button>
+      <button>5</button>
+      <button>&raquo;</button>
+    </div>
+
+    <div class="proposal">
+      <input type="text" placeholder="검색 내용을 입력하세요">
+      <a href="./party-make01.html"><button>파티원 모집 하기</button></a>
+    </div>
+  </main>
+
+  <footer>
+    <p><strong>Project A P M</strong></p>
+    <p>대표자  채희수</p>
+    <p>이메일 dooly123@naver.com</p>
+    <p>연락처 010 1234 5678</p>
+  </footer>
+
+  <!--스크립트-->
+  <script>
+  // 로컬스토리지 저장값 불러오기
+  const partyData = JSON.parse(localStorage.getItem("partyData"));
+  const adList = document.querySelector(".ad-list");
+
+  if (partyData) {
+    const newItem = document.createElement("div");
+    newItem.classList.add("ad-item");
+    newItem.textContent = `${partyData.title} (${partyData.currentMember}/${partyData.maxMember}) - ${new Date(partyData.createdAt).toLocaleDateString()}`;
+
+    // 클릭 시 상세페이지 이동
+    newItem.addEventListener("click", () => {
+      window.location.href = "party-detail.html";
+    });
+
+    // 기존 아이템들을 배열로 가져오기
+    const existingItems = Array.from(adList.children);
+    console.log(existingItems);
+
+    // 최대 6개 유지: 새 아이템 추가 후 초과되면 마지막 제거
+    adList.prepend(newItem);
+    if (existingItems.length >= 6) {
+      adList.removeChild(adList.lastElementChild);
+    }
+  }
+  </script>
+</body>
+</html>

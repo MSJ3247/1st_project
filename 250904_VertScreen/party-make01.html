@@ -22,13 +22,13 @@
         <a href="./vertscreen_advertlist.html">광고 종류</a>
         <a href="./vertscreen_brand.html">브랜드 가치</a>
         <a href="./party-make01.html">파티 모집</a>
-        <a href="./advertisement.html">광고 제안</a>
+        <a href="#">광고 제안</a>
         <a href="./review.html" id="reviewLink">리뷰 게시판</a>
       </nav>
       <div class="spacer"></div>
       <div class="actions" id="authArea">
         <a href="login.html" class="btn">로그인</a>
-        <a href="login.html?mode=signup" class="btn primary">회원가입</a>
+        <a href="login.html" class="btn primary">회원가입</a>
       </div>
       <div class="profile" id="profile">
         <div class="avatar" id="avatar">U</div>
@@ -445,7 +445,6 @@
         return;
     }
 
-    // 데이터를 배열에 저장하고, party-detail.html로 이동
     const data = {
       lat: selectedMarkerLat,
       lng: selectedMarkerLng,
@@ -459,12 +458,17 @@
       uploadImg: document.getElementById("imagePreview").src,
       title: document.getElementById("textTitle").value,
       content: document.getElementById("textInput").value,
+      createdAt: new Date().toISOString() // 생성 시간 추가
     };
     localStorage.setItem("partyData", JSON.stringify(data));
+
+    let partyList = JSON.parse(localStorage.getItem("partyList")) || [];
+    // 새 데이터 추가
+    partyList.unshift(data); // 항상 앞에 추가
+
+    // 상세 페이지로 이동
     window.location.href = "party-detail.html";
   }
 </script>
 </body>
-
 </html>
-
