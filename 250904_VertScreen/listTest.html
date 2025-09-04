@@ -173,16 +173,13 @@
         adListElement.prepend(item);
       });
 
-      // 제안하기 버튼 클릭 이벤트
+      // 제안하기 버튼 클릭 이벤트 (currentUser만 확인)
       document.getElementById("proposalBtn").addEventListener("click", function () {
-        // 로그인 상태 확인 (예시: localStorage.isLoggedIn 사용)
-        const isLoggedIn = localStorage.getItem("isLoggedIn") === "true";
-
-        if (!isLoggedIn) {
+        const currentUser = localStorage.getItem("currentUser");
+        if (!currentUser) {
           alert("로그인이 필요한 기능입니다.");
           return;
         }
-
         // 로그인 상태면 제안 페이지로 이동
         window.location.href = "./advertisement.html";
       });
@@ -190,50 +187,50 @@
 
 
     (function () {
-    const authArea = document.getElementById("authArea");
-    const profile  = document.getElementById("profile");
-    const dropdown = document.getElementById("dropdown");
+      const authArea = document.getElementById("authArea");
+      const profile = document.getElementById("profile");
+      const dropdown = document.getElementById("dropdown");
 
-    function logout() {
-      localStorage.removeItem("currentUser");
-      location.reload();
-    }
-    window.logout = logout;
+      function logout() {
+        localStorage.removeItem("currentUser");
+        location.reload();
+      }
+      window.logout = logout;
 
-    if (profile && dropdown) {
-      profile.addEventListener("click", (e) => {
-        e.stopPropagation();
-        dropdown.style.display = dropdown.style.display === "block" ? "none" : "block";
+      if (profile && dropdown) {
+        profile.addEventListener("click", (e) => {
+          e.stopPropagation();
+          dropdown.style.display = dropdown.style.display === "block" ? "none" : "block";
+        });
+        window.addEventListener("click", (e) => {
+          if (!profile.contains(e.target)) dropdown.style.display = "none";
+        });
+      }
+
+      const currentUser = localStorage.getItem("currentUser");
+      if (currentUser && authArea && profile) {
+        authArea.style.display = "none";
+        profile.style.display = "flex";
+        document.getElementById("avatar").innerText = currentUser.charAt(0).toUpperCase();
+        document.getElementById("welcomeMsg").innerText = `${currentUser}님 환영합니다!`;
+      }
+
+      const protectedLinks = [
+        document.querySelector('a[href="./party-make01.html"]'),
+        document.querySelector('a[href="#"]')
+      ];
+      protectedLinks.forEach(link => {
+        if (!link) return;
+        link.addEventListener("click", (e) => {
+          const u = localStorage.getItem("currentUser");
+          if (!u) {
+            e.preventDefault();
+            alert("로그인이 필요합니다.");
+            location.href = "login.html";
+          }
+        });
       });
-      window.addEventListener("click", (e) => {
-        if (!profile.contains(e.target)) dropdown.style.display = "none";
-      });
-    }
-
-    const currentUser = localStorage.getItem("currentUser");
-    if (currentUser && authArea && profile) {
-      authArea.style.display = "none";
-      profile.style.display  = "flex";
-      document.getElementById("avatar").innerText = currentUser.charAt(0).toUpperCase();
-      document.getElementById("welcomeMsg").innerText = `${currentUser}님 환영합니다!`;
-    }
-
-    const protectedLinks = [
-      document.querySelector('a[href="./party-make01.html"]'),
-      document.querySelector('a[href="#"]')
-    ];
-    protectedLinks.forEach(link => {
-      if (!link) return;
-      link.addEventListener("click", (e) => {
-        const u = localStorage.getItem("currentUser");
-        if (!u) {
-          e.preventDefault();
-          alert("로그인이 필요합니다.");
-          location.href = "login.html";
-        }
-      });
-    });
-  })();
+    })();
   </script>
 </body>
 
