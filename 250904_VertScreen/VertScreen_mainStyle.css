@@ -128,7 +128,7 @@
     /* 슬라이드 이미지 (배경 순환) */
     @keyframes slideShow {
       0%   { background-image: url("./디지털포스터\ 광고3.jfif"); }
-      33%  { background-image: url("./사각기둥\ 광고3.png"); }
+      33%  { background-image: url("./사각기둥\ 광고3.jpg"); }
       66%  { background-image: url("./와이드칼라광고2.jpg"); }
       100% { background-image: url("./디지털포스터\ 광고3.jfif"); }
     }
