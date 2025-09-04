@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<!-- saved from url=(0049)http://192.168.0.5:5500/advertisement_detail.html -->
+<html lang="ko"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  
+  <title>광고 제안 상세</title>
+  <link rel="stylesheet" href="./광고 제안 게시판 2_files/VertScreen_mainStyle.css">
+  <link rel="stylesheet" href="./광고 제안 게시판 2_files/advertisement_detail.css">
+  <script src="./광고 제안 게시판 2_files/maps.js.다운로드"></script>
+<style>
+    #detailTitle, #detailContent {
+    color: black;
+    }
+    p {
+      text-align: center;
+    }
+</style></head>
+
+<body>
+  <!-- header -->
+  <header class="site-header">
+    <div class="nav-wrap">
+      <div class="brand">
+        <a href="http://192.168.0.5:5500/vertscreen_main.html">
+          <img src="./광고 제안 게시판 2_files/raw-Photoroom.png" alt="VertScreen Logo">
+        </a>
+      </div>
+      <nav class="nav">
+        <a href="http://192.168.0.5:5500/vertscreen_advertlist.html">광고 종류</a>
+        <a href="http://192.168.0.5:5500/vertscreen_brand.html">브랜드 가치</a>
+        <a href="http://192.168.0.5:5500/party-make01.html">파티 모집</a>
+        <a href="http://192.168.0.5:5500/advertisement.html">광고 제안</a>
+        <a href="http://192.168.0.5:5500/review.html">리뷰 게시판</a>
+      </nav>
+    </div>
+  </header>
+
+  <main style="max-width:1200px; margin:0 auto; padding:20px;">
+    <!-- ① 네이버 맵 -->
+    <section id="naver-map-section">
+      <h2>입력된 주소</h2>
+      <p id="detailAddress" style="text-align:center; font-weight:bold; margin-top:10px;"></p>
+      <p>강남역 11번 출구</p>
+      <div id="map" style="width:100%; height:400px; border-radius:8px;"></div>
+    </section>
+
+    <!-- ② 이미지 + ③ 광고판 금액 -->
+    <section class="map-and-calendar" style="margin-top:30px;">
+      <div>
+        <h3>이미지 샘플</h3>
+        <img id="detailImg" alt="업로드 이미지" style="width:500px; height:300px; object-fit:cover; border-radius:8px;" src="./광고 제안 하드코딩 이미지1.jfif">
+      </div>
+      </div>
+      <div style="display:flex; flex-direction:column; justify-content:center; margin-left:40px;">
+        <h3>광고판 금액</h3>
+        <p id="detailAmount" style="font-size:20px; font-weight:bold;">3,100,000 원</p>
+      </div>
+    </section>
+
+    <!-- ④ 광고 제안 내용 -->
+    <section style="margin-top:30px;">
+      <h3>광고 제안 내용</h3>
+      <div style="background:#f1f5f9; padding:20px; border-radius:8px;">
+        <h4 id="detailTitle" style="margin-bottom:10px;"></h4>
+        <p id="detailContent">✓ 운영시간 :05시~01시 (20시간)
+        ✓ 20초 기준 1일 120회
+
+        1 - 역내 유동 인구가 많은 구역
+        개찰구, 환승통로, 출구, 에스컬레이터 주변,많은승객에게 노출
+
+        2 - 가로형에 비해 몰입도가 높은 세로형 콘텐츠
+
+        05:00 ~ 01:00 (일20시간운영)
+
+        *2면 1세트 구성 (디자인 파일 1가지만 가능)*
+        사운드 지원X</p>
+      </div>
+    </section>
+
+    <!-- ⑤ 문의하기 + ⑥ 취소 -->
+    <div class="pnc-btn" style="margin-top:30px;">
+      <a href="./listTest.html">
+      <button class="make-party" onclick="alert('이메일이 전송되었습니다')">문의하기</button>
+      </a>
+      <button class="cancel" onclick="window.location.href='advertisement.html'">취소</button>
+    </div>
+  </main>
+<script>
+	// <![CDATA[  <-- For SVG support
+	if ('WebSocket' in window) {
+		(function () {
+			function refreshCSS() {
+				var sheets = [].slice.call(document.getElementsByTagName("link"));
+				var head = document.getElementsByTagName("head")[0];
+				for (var i = 0; i < sheets.length; ++i) {
+					var elem = sheets[i];
+					var parent = elem.parentElement || head;
+					parent.removeChild(elem);
+					var rel = elem.rel;
+					if (elem.href && typeof rel != "string" || rel.length == 0 || rel.toLowerCase() == "stylesheet") {
+						var url = elem.href.replace(/(&|\?)_cacheOverride=\d+/, '');
+						elem.href = url + (url.indexOf('?') >= 0 ? '&' : '?') + '_cacheOverride=' + (new Date().valueOf());
+					}
+					parent.appendChild(elem);
+				}
+			}
+			var protocol = window.location.protocol === 'http:' ? 'ws://' : 'wss://';
+			var address = protocol + window.location.host + window.location.pathname + '/ws';
+			var socket = new WebSocket(address);
+			socket.onmessage = function (msg) {
+				if (msg.data == 'reload') window.location.reload();
+				else if (msg.data == 'refreshcss') refreshCSS();
+			};
+			if (sessionStorage && !sessionStorage.getItem('IsThisFirstTime_Log_From_LiveServer')) {
+				console.log('Live reload enabled.');
+				sessionStorage.setItem('IsThisFirstTime_Log_From_LiveServer', true);
+			}
+		})();
+	}
+	else {
+		console.error('Upgrade your browser. This Browser is NOT supported WebSocket for Live-Reloading.');
+	}
+	// ]]>
+</script>
+
+</body></html>
