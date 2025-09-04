@@ -6,9 +6,37 @@
   <title>파티 모집</title>
   <link rel="stylesheet" href="./VertScreen_mainStyle.css">
   <link rel="stylesheet" href="./party-board.css">
-</head>
+  <style>
+    .progress-bar {
+      width: 100%;
+      height: 10px;
+      background: #1e293b; /* 기존 배경색 유지 */
+      border-radius: 10px;
+      overflow: hidden;
+      position: relative;
+    }
+    .progress-fill {
+      height: 100%;
+      width: 0; /* 애니메이션 시작을 위해 너비를 0으로 설정 */
+      background: linear-gradient(90deg, #1DA1F2, #38BDF8, #60A5FA);
+      background-size: 200% 100%;
+      /* 'fillWater' 애니메이션을 통해 너비가 채워지고, 'shimmer'로 반짝이는 효과를 줌 */
+      animation: fillWater 2s ease forwards, shimmer 3s linear infinite;
+      border-radius: 10px;
+    }
+    /* 너비를 0에서 목표치까지 채우는 애니메이션 */
+    @keyframes fillWater {
+      from { width: 0; }
+      to { width: var(--target-width); } /* JavaScript에서 설정할 변수 */
+    }
+    /* 배경 그래디언트를 움직여 반짝이는 효과를 주는 애니메이션 */
+    @keyframes shimmer {
+      from { background-position: 200% 0; }
+      to { background-position: 0% 0; }
+    }
+  </style>
+  </head>
 <body>
-  <!--header-->
   <header class="site-header">
     <div class="nav-wrap">
       <div class="brand">
@@ -38,8 +66,6 @@
       </div>
     </div>
   </header>
-  <!--header end-->
-
   <main>
     <h1>파티 모집 게시판</h1>
 
@@ -49,8 +75,8 @@
       <div class="ad-item">
         [고길동] - 제목: 희동이 생일기념 파티 (100/100) - 2025. 05. 31
         <div class="progress-wrap" style="margin-top:8px;">
-        <div class="progress-bar" style="width:100%; background:#eee; border-radius:8px; overflow:hidden; height:10px;">
-        <div class="progress-fill" style="width:100%; background:#1da1f2; height:100%;"></div>
+        <div class="progress-bar">
+        <div class="progress-fill" style="--target-width: 100%;"></div>
         </div>
         <small>진행률: 100%</small>
         </div>
@@ -80,7 +106,6 @@
     <p>연락처 010 1234 5678</p>
   </footer>
 
-  <!--스크립트-->
   <script>
   /* 프로필 */
   const profile = document.getElementById("profile");
@@ -109,6 +134,7 @@
         dropdown.style.display = "none";
       }
     });
+    // window.onload가 중복 선언되어 하나로 합칩니다.
     window.onload = () => {
     const currentUser = localStorage.getItem("currentUser");
     if (currentUser) {
@@ -128,14 +154,18 @@
       document.querySelector('a[href="./advertisement_detail.html"]')   
     ];
 
-    protectedLinks.forEach(link => {
-      link.addEventListener("click", (e) => {
-        if (!currentUser) {
-          e.preventDefault();
-          alert("로그인이 필요합니다.");
-          window.location.href = "login.html";
-        }
-      });
+    // NodeList.forEach()가 오래된 브라우저에서 지원되지 않을 수 있으므로 Array.from으로 감싸줍니다.
+    Array.from(protectedLinks).forEach(link => {
+      // link가 null이 아닐 경우에만 이벤트 리스너를 추가합니다.
+      if (link) {
+        link.addEventListener("click", (e) => {
+          if (!currentUser) {
+            e.preventDefault();
+            alert("로그인이 필요합니다.");
+            window.location.href = "login.html";
+          }
+        });
+      }
     });
   };
 
@@ -156,6 +186,9 @@
     let paidAmount = paidCount * perAmount;
     let progress = Math.min(100, Math.round((paidAmount / totalAmount) * 100));
 
+  // ▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼ 수정된 innerHTML ▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼
+  // progress-bar와 progress-fill의 인라인 스타일을 제거하고,
+  // CSS 애니메이션이 참조할 --target-width 변수를 progress-fill의 인라인 스타일로 설정합니다.
   newItem.innerHTML = `
     <div class="post-info">
       [${post.author}] - 제목: ${post.title} 
@@ -163,19 +196,20 @@
       ${new Date(post.createdAt).toLocaleDateString()}
     </div>
     <div class="progress-wrap" style="margin-top:8px;">
-      <div class="progress-bar" style="width:100%; background:#eee; border-radius:8px; overflow:hidden; height:10px;">
-        <div class="progress-fill" style="width:${progress}%; background:#1da1f2; height:100%;"></div>
+      <div class="progress-bar">
+        <div class="progress-fill" style="--target-width: ${progress}%;"></div>
       </div>
       <small>진행률: ${progress}%</small>
     </div>
   `;
+  // ▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲ 수정된 innerHTML ▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲
   
   newItem.addEventListener("click", () => {
     localStorage.setItem("selectedParty", JSON.stringify(post));
     window.location.href = "party-detail.html";
   });
 
-  // 기존 파티1, 파티2보다 위쪽에 추가
+  // 기존 파티(하드코딩된 예제)보다 위쪽에 추가
   adList.insertBefore(newItem, adList.firstChild);
 });
   </script>
