@@ -84,17 +84,23 @@
       align-items: center;
       gap: 10px;
     }
+    
+    /* 금액 텍스트 스타일 */
+    .funding-text {
+        margin-left: 15px; /* 진행률 바와의 간격 */
+        font-size: 15px;
+        color: #bdc3c7;
+        white-space: nowrap; /* 금액이 길어져도 줄바꿈 방지 */
+    }
 
     .progress-text {
       min-width: 40px;
-      /* 고정 폭 확보 (예: '100%'도 안정적으로 표시) */
       text-align: right;
     }
 
     .progress-bar-container {
       flex: none;
       width: 200px;
-      /* 바 전체 고정 길이 */
       height: 10px;
       background: #1e293b;
       border-radius: 10px;
@@ -115,14 +121,9 @@
     @keyframes fillWater {
       from {
         width: 0;
-        right: 0;
-        left: auto;
       }
-
       to {
         width: var(--target-width);
-        right: 0;
-        left: auto;
       }
     }
 
@@ -130,7 +131,6 @@
       from {
         background-position: 200% 0;
       }
-
       to {
         background-position: 0% 0;
       }
@@ -182,7 +182,7 @@
 
     <section class="party-list">
       <h2>참여중인 파티</h2>
-      </section>
+    </section>
 
     <div class="actions" style="margin-top: 20px;">
       <a href="#" class="btn" onclick="logout()">로그아웃</a>
@@ -197,47 +197,40 @@
   </footer>
 
   <script>
-    // 로그아웃 기능
     function logout() {
       localStorage.removeItem('currentUser');
       window.location.href = 'login.html';
     }
 
-    // 리뷰 작성 기능
     function writeReview(partyId) {
       alert(`'${partyId}' 파티의 리뷰 작성 페이지로 이동합니다.`);
       window.location.href = `review_detail.html?party=${partyId}`;
     }
 
-    // 페이지 로드 시 실행
     window.onload = () => {
-      // 1. 로그인 정보 불러오기
       const currentUser = localStorage.getItem('currentUser');
       if (currentUser) {
         document.getElementById('userId').innerText = currentUser;
-        document.getElementById('userEmail').innerText = currentUser; // 예시로 이메일도 동일하게 설정
+        document.getElementById('userEmail').innerText = currentUser;
       } else {
         alert("로그인이 필요합니다.");
         window.location.href = "login.html";
         return;
       }
 
-      // 2. 참여중인 파티 목록을 표시할 컨테이너
       const partyListContainer = document.querySelector('.party-list');
-      
-      // 3. 로컬 스토리지에서 파티 데이터 가져오기
       const partyData = JSON.parse(localStorage.getItem("partyData"));
 
-      // 4. 현재 유저가 파티에 참여했는지 확인하고, 참여했다면 목록에 표시
       if (partyData && partyData.participants && partyData.participants.includes(currentUser)) {
         
-        // 진행률 계산 (party-detail.html 로직과 동일)
         let totalAmount = partyData.amount;
         let headcount = partyData.headcount;
+        let perAmount = Math.floor(totalAmount / headcount);
         let paidCount = partyData.participants.length;
-        let progress = Math.min(100, Math.round(( (totalAmount / headcount * paidCount) / totalAmount) * 100));
+        let paidAmount = paidCount * perAmount;
+        let progress = Math.min(100, Math.round((paidAmount / totalAmount) * 100));
 
-        // 새로운 파티 아이템 HTML 생성
+        // 금액 텍스트를 .party-progress 내부에 추가
         const partyItemHTML = `
           <div class="party-item" data-party="${partyData.title}" data-progress="${progress}">
             <div class="party-info">
@@ -247,30 +240,27 @@
                 <div class="progress-bar-container">
                   <div class="progress-bar"></div>
                 </div>
+                <span class="funding-text">${paidAmount.toLocaleString()} / ${totalAmount.toLocaleString()} 원</span>
               </div>
             </div>
             <div class="review-btn" onclick="writeReview('${partyData.title}')">리뷰 작성</div>
           </div>
         `;
         
-        // 컨테이너에 생성된 HTML 추가
         partyListContainer.innerHTML += partyItemHTML;
 
       } else {
         partyListContainer.innerHTML += '<p>참여중인 파티가 없습니다.</p>';
       }
 
-      // 5. 생성된 파티 아이템에 애니메이션 및 리뷰 버튼 표시 로직 적용
       document.querySelectorAll('.party-item').forEach(item => {
         const progress = parseInt(item.dataset.progress);
         const progressBar = item.querySelector('.progress-bar');
         const reviewBtn = item.querySelector('.review-btn');
 
-        // 프로그레스 바 너비와 애니메이션 변수 설정
         progressBar.style.setProperty('--target-width', `${progress}%`);
         progressBar.style.width = progress + "%";
 
-        // 진행률이 100%일 때만 리뷰 작성 버튼 표시
         if (progress === 100) {
           reviewBtn.style.display = 'inline-block';
         }
