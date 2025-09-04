@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>광고 제안</title>
+  <link rel="stylesheet" href="./VertScreen_mainStyle.css">
+  <style>
+    main {
+      max-width: 800px;
+      margin: 40px auto;
+      padding: 0 20px;
+    }
+    h1 {
+      font-size: 2rem;
+      font-weight: 900;
+      margin-bottom: 30px;
+    }
+    .ad-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-bottom: 30px;
+    }
+    .ad-item {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.25s ease;
+    }
+    .ad-item:hover {
+      border-color: var(--accent);
+      background: rgba(29,161,242,0.1);
+    }
+    .pagination {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 20px;
+    }
+    .pagination button {
+      padding: 6px 12px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--panel);
+      color: var(--text);
+      cursor: pointer;
+    }
+    .pagination button.active {
+      background: var(--accent);
+      color: #fff;
+      border-color: var(--accent);
+    }
+    .proposal {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+    .proposal input[type="text"] {
+      flex: 1;
+      padding: 10px 14px;
+      border-radius: var(--radius);
+      border: 1px solid var(--line);
+      background: var(--panel);
+      color: var(--text);
+    }
+    .proposal button {
+      padding: 10px 18px;
+      border-radius: var(--radius);
+      border: none;
+      background: var(--accent);
+      color: #fff;
+      font-weight: 700;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <header class="site-header">
+    <div class="nav-wrap">
+      <div class="brand">
+        <a href="./vertscreen_main.html"><img src="./raw-Photoroom.png" alt="VertScreen Logo"></a>
+      </div>
+      <nav class="nav">
+        <a href="./vertscreen_advertlist.html">광고 종류</a>
+        <a href="./vertscreen_brand.html">브랜드 가치</a>
+        <a href="./party-make01.html">파티 모집</a>
+        <a href="./advertisement.html">광고 제안</a>
+        <a href="./review.html">리뷰 게시판</a>
+      </nav>
+      <div class="spacer"></div>
+      <div class="actions" id="authArea">
+        <a href="login.html" class="btn">로그인</a>
+        <a href="login.html" class="btn primary">회원가입</a>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <h1>광고 제안</h1>
+
+    <div class="ad-list">
+      <div class="ad-item">광고 장소 공지 1</div>
+      <div class="ad-item">광고 장소 공지 2</div>
+      <div class="ad-item">광고 장소 공지 3</div>
+      <div class="ad-item">광고 장소 공지 4</div>
+      <div class="ad-item">광고 장소 공지 5</div>
+      <div class="ad-item">광고 장소 공지 6</div>
+    </div>
+
+    <div class="pagination">
+      <button>&laquo;</button>
+      <button class="active">1</button>
+      <button>2</button>
+      <button>3</button>
+      <button>4</button>
+      <button>5</button>
+      <button>&raquo;</button>
+    </div>
+
+    <div class="proposal">
+      <input type="text" placeholder="제안 내용을 입력하세요">
+      <button>제안하기</button>
+    </div>
+  </main>
+
+  <footer>
+    <p><strong>Project A P M</strong></p>
+    <p>대표자  채희수</p>
+    <p>이메일 dooly123@naver.com</p>
+    <p>연락처 010 1234 5678</p>
+  </footer>
+</body>
+</html>
