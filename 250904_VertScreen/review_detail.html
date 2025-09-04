@@ -18,10 +18,15 @@
       padding-bottom: 10px
     }
 
-    .review-content {
+    /* 파티 대표 이미지 스타일 */
+    #partyImageContainer {
+      width: 100%;
       margin-bottom: 30px;
-      font-size: 16px;
-      line-height: 1.6
+    }
+
+    #partyImageContainer img {
+      width: 100%;
+      border-radius: var(--radius);
     }
 
     .review-form textarea {
@@ -95,7 +100,6 @@
       font-weight: bold
     }
 
-    /* 게시판 초기화 버튼 (푸터 구석) */
     #resetBtn {
       position: fixed;
       bottom: 10px;
@@ -116,7 +120,6 @@
       opacity: 1
     }
 
-    /* 테이블 버튼 영역 */
     .table-buttons {
       display: flex;
       justify-content: flex-end;
@@ -124,7 +127,6 @@
       margin-top: 8px
     }
 
-    /* 테이블 버튼 스타일 */
     .table-buttons button {
       padding: 6px 12px;
       background: var(--accent);
@@ -147,7 +149,6 @@
       transform: scale(.95)
     }
 
-    /* 이미지 업로드 스타일 */
     .upload-area {
       margin-bottom: 15px
     }
@@ -194,9 +195,9 @@
     <div class="review-header">
       <h2 id="reviewTitle">리뷰 상세</h2>
     </div>
-    <div class="review-content" id="reviewContent">이 파티에 대한 리뷰 상세 페이지입니다.</div>
+    
+    <div id="partyImageContainer"></div>
 
-    <!-- 리뷰 목록 -->
     <div class="review-list" id="reviewList">
       <table>
         <thead>
@@ -214,22 +215,16 @@
       </div>
     </div>
 
-    <!-- 리뷰 작성 -->
     <div class="review-form" id="reviewFormSection">
       <h3>리뷰 작성</h3>
-
-      <!-- 🔹 이미지 업로드 -->
       <div class="upload-area">
         <label for="reviewImage" class="upload-box"><span>이미지 업로드</span></label>
         <input type="file" id="reviewImage" accept="image/*" style="display:none" />
         <div id="preview" class="preview"></div>
         <div class="hint">※ 저장공간 보호를 위해 이미지는 자동으로 축소·압축되어 저장됩니다.</div>
       </div>
-
-      <!-- 별점 -->
       <div class="stars" id="starContainer"></div>
       <textarea id="reviewText" placeholder="리뷰를 입력하세요"></textarea>
-      <!-- type="button" 명시 → 혹시 form 태그가 추가돼도 submit 되지 않도록 -->
       <button id="saveBtn" type="button" onclick="saveReview()">등록</button>
     </div>
 
@@ -240,18 +235,14 @@
       <p>연락처 010 1234 5678</p>
     </footer>
 
-    <!-- 게시판 초기화 버튼 -->
     <button id="resetBtn" style="display:none;">게시판 초기화</button>
 
     <script>
-      let uploadedImage = ""; // ✅ 업로드된 이미지(압축된 dataURL) 저장 변수
+      let uploadedImage = ""; 
       const saveBtn = document.getElementById("saveBtn");
       const fileInput = document.getElementById("reviewImage");
       const preview = document.getElementById("preview");
 
-      /* ---------------- 이미지 처리 관련 함수 ---------------- */
-
-      // 파일을 읽어서 <img> 객체로 변환
       function loadImageFromFile(file) {
         return new Promise((resolve, reject) => {
           const reader = new FileReader();
@@ -266,9 +257,11 @@
         });
       }
 
-      // 이미지 축소/압축 (기본: 800px, JPEG 품질 0.7)
       function downscale(img, maxW = 800, maxH = 800) {
-        let { width, height } = img;
+        let {
+          width,
+          height
+        } = img;
         const ratio = Math.min(maxW / width, maxH / height, 1);
         const w = Math.round(width * ratio);
         const h = Math.round(height * ratio);
@@ -278,35 +271,26 @@
         canvas.height = h;
         const ctx = canvas.getContext("2d");
         ctx.drawImage(img, 0, 0, w, h);
-
-        // JPEG로 변환 (용량 절감). 투명 배경이 필요하면 'image/png'로 가능
         return canvas.toDataURL("image/jpeg", 0.7);
       }
 
-      // 최종적으로 압축된 DataURL 반환
       async function compressFileToDataURL(file) {
         const img = await loadImageFromFile(file);
         return downscale(img, 800, 800);
       }
 
-      /* ---------------- 이미지 업로드 이벤트 ---------------- */
       fileInput.addEventListener("change", async (e) => {
         const file = e.target.files[0];
         if (!file) {
           removeImage();
           return;
         }
-
-        // 업로드 중에는 등록 버튼 비활성화
         saveBtn.disabled = true;
         preview.innerHTML = '<span class="hint">이미지 처리 중...</span>';
 
         try {
-          // 이미지 축소/압축 → DataURL 저장
           const dataURL = await compressFileToDataURL(file);
           uploadedImage = dataURL;
-
-          // 미리보기 표시 + 삭제 버튼 추가
           preview.innerHTML = `
           <div style="display:inline-flex; align-items:center; gap:5px;">
             <img src="${uploadedImage}" alt="미리보기" />
@@ -319,18 +303,16 @@
           fileInput.value = "";
           alert("이미지 처리 중 오류가 발생했습니다. 다른 이미지를 시도해주세요.");
         } finally {
-          saveBtn.disabled = false; // 완료되면 다시 활성화
+          saveBtn.disabled = false;
         }
       });
 
-      // 이미지 제거 버튼 동작
       function removeImage() {
         uploadedImage = "";
         preview.innerHTML = "";
         fileInput.value = "";
       }
 
-      /* ---------------- 별점 UI ---------------- */
       const starContainer = document.getElementById("starContainer");
       let selectedRating = 0;
       for (let i = 1; i <= 5; i++) {
@@ -346,13 +328,12 @@
         starContainer.appendChild(star);
       }
 
-      /* ---------------- 리뷰 목록/페이징 ---------------- */
       const params = new URLSearchParams(window.location.search);
       const partyName = params.get("party");
       const reviewTableBody = document.getElementById("reviewTableBody");
 
       let loadedCount = 0;
-      const LOAD_BATCH = 5; // 한 번에 불러올 리뷰 개수
+      const LOAD_BATCH = 5;
       let sortedReviews = [];
 
       function loadReviews() {
@@ -370,23 +351,16 @@
         const slice = sortedReviews.slice(loadedCount, loadedCount + LOAD_BATCH);
         slice.forEach(r => {
           const tr = document.createElement("tr");
-
-          // ⭐ 별점
           const tdRating = document.createElement("td");
           tdRating.textContent = "⭐".repeat(r.rating);
-
-          // 🖼 이미지
           const tdImage = document.createElement("td");
           if (r.image) {
             tdImage.innerHTML = `<img src="${r.image}" style="max-width:100px;border-radius:6px" />`;
           } else {
             tdImage.textContent = "-";
           }
-
-          // ✏ 리뷰 내용
           const tdContent = document.createElement("td");
           tdContent.textContent = r.content;
-
           tr.appendChild(tdRating);
           tr.appendChild(tdImage);
           tr.appendChild(tdContent);
@@ -400,7 +374,6 @@
           loadedCount > LOAD_BATCH ? "inline-block" : "none";
       }
 
-      /* ---------------- 리뷰 저장 ---------------- */
       function saveReview() {
         const text = document.getElementById("reviewText").value.trim();
         if (!text) {
@@ -411,11 +384,9 @@
           alert("별점을 선택해주세요.");
           return;
         }
-
         if (!confirm("리뷰를 등록하시겠습니까?")) {
           return;
         }
-
         const newReview = {
           party: partyName,
           content: text,
@@ -423,8 +394,6 @@
           image: uploadedImage || null,
           timestamp: Date.now()
         };
-
-        // localStorage 저장 (용량 초과 대비)
         try {
           const reviews = JSON.parse(localStorage.getItem("reviews") || "[]");
           reviews.push(newReview);
@@ -438,25 +407,18 @@
           }
           return;
         }
-
         alert("리뷰가 성공적으로 등록되었습니다.");
-
-        // 입력값 초기화
         document.getElementById("reviewText").value = "";
         selectedRating = 0;
         uploadedImage = "";
         preview.innerHTML = "";
         fileInput.value = "";
         document.querySelectorAll(".star").forEach(s => s.classList.remove("selected"));
-
         loadReviews();
       }
 
-      /* ---------------- 버튼 이벤트 ---------------- */
       document.getElementById("loadMoreBtn").addEventListener("click", loadMore);
       document.getElementById("collapseBtn").addEventListener("click", loadReviews);
-
-      // 게시판 초기화 버튼
       document.getElementById("resetBtn").addEventListener("click", () => {
         if (confirm("이 파티의 리뷰를 모두 삭제하시겠습니까?")) {
           let reviews = JSON.parse(localStorage.getItem("reviews") || "[]");
@@ -467,17 +429,23 @@
         }
       });
 
-      /* ---------------- 초기 실행 ---------------- */
       window.onload = () => {
-        loadReviews();
+        // 파티 대표 이미지 로드
+        const partyData = JSON.parse(localStorage.getItem("partyData"));
+        const imageContainer = document.getElementById("partyImageContainer");
 
-        // ✅ 로그인 여부 확인
+        // ✅ 현재 리뷰의 파티 이름(partyName)과 저장된 파티 데이터의 제목(title)이 일치할 때만 이미지를 표시하도록 수정
+        if (partyData && partyData.uploadImg && imageContainer && partyData.title === partyName) {
+            imageContainer.innerHTML = `<img src="${partyData.uploadImg}" alt="${partyData.title} 대표 이미지">`;
+        }
+
+        // 기존 리뷰 로드 및 로그인 확인 로직
+        loadReviews();
         const currentUser = localStorage.getItem("currentUser");
         const reviewFormSection = document.getElementById("reviewFormSection");
         const resetBtn = document.getElementById("resetBtn");
 
         if (!currentUser) {
-          // 로그인 안 된 경우 리뷰 작성 숨김
           reviewFormSection.style.display = "none";
           resetBtn.style.display = "none";
           const msg = document.createElement("p");
@@ -486,7 +454,6 @@
           msg.style.textAlign = "center";
           reviewFormSection.parentNode.insertBefore(msg, reviewFormSection);
         } else {
-          // 로그인 된 경우 버튼 표시
           resetBtn.style.display = "block";
         }
       };
