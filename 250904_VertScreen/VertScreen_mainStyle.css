@@ -82,7 +82,13 @@
     .actions{display:flex; gap:10px}
     .btn{appearance:none; border:1px solid #22314b; background:#0e1729; color:#dbeafe; padding:10px 14px; border-radius:999px; font-weight:800; cursor:pointer}
     .btn.primary{background:var(--accent); color:#fff; border-color:transparent}
-
+    
+    /* 프로필 드롭다운 */
+    .profile { position:relative; display:none; align-items:center; cursor:pointer; }
+    .avatar { width:36px; height:36px; border-radius:50%; background:var(--accent); display:flex; align-items:center; justify-content:center; font-weight:800; color:#000; }
+    .dropdown { display:none; position:absolute; top:48px; right:0; background:var(--panel); border:1px solid var(--line); border-radius:var(--radius); overflow:hidden; min-width:140px; box-shadow: var(--shadow);}
+    .dropdown a, .dropdown button { display:block; width:100%; padding:12px; background:none; border:none; color:var(--text); text-align:left; cursor:pointer; font-size:14px; }
+    .dropdown a:hover, .dropdown button:hover { background:#22314b; }
     /* ===== Main ===== */
     main{max-width:1200px; margin:0 auto; padding:28px 20px 80px}
 

@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>결제 페이지</title>
+  <link rel="stylesheet" href="VertScreen_mainStyle.css">
+  <link rel="stylesheet" href="payment.css">
+</head>
+<body>
+  <div class="container">
+    <h2>결제 진행</h2>
+
+    <!-- 광고판/금액 정보 -->
+    <div class="info-box" id="payment-info"></div>
+
+    <!-- 진행률 바 -->
+    <div class="progress-wrap">
+      <div class="progress-label">
+        <span id="progress-text">0%</span>
+        <span id="remain-text">남은 금액: 0 원</span>
+      </div>
+      <div class="progress-bar">
+        <div class="progress-fill" id="progress-fill"></div>
+      </div>
+    </div>
+
+    <!-- 결제 수단 -->
+    <label for="payment-method">결제 수단</label>
+    <select id="payment-method">
+      <option value="card">신용/체크카드</option>
+      <option value="account">계좌이체</option>
+    </select>
+
+    <!-- 카드/계좌 입력 폼 -->
+    <div id="payment-form"></div>
+
+    <button class="btn" onclick="completePayment()">결제하기</button>
+  </div>
+
+<script>
+  /* 로컬스토리지 정보 획득하여 변수에 저장 */
+  let partyData = JSON.parse(localStorage.getItem("partyData"));
+  let currentUser = localStorage.getItem("currentUser");
+
+  if (!currentUser) {
+    alert("로그인이 필요합니다.");
+    window.location.href = "login.html";
+  }
+
+  if (!partyData) {
+    alert("파티 데이터가 없습니다.");
+    window.location.href = "party-main.html";
+  }
+
+  let totalAmount = partyData.amount;       // 광고판 가격(총 지불해야할 금액)
+  let headcount = partyData.headcount;      //  인원수(1/n 선택시)
+  let perAmount = Math.floor(totalAmount / headcount);  // 광고판 가격, 인원수 (1/n 일때)
+  let freeAmount = partyData.freeamount;
+  freeAmount = parseInt(freeAmount);
+
+  // 결제 완료 인원/금액
+  let paidCount = partyData.paidParticipants ? partyData.paidParticipants.length : 0; // 결제 완료 인원
+  let paidAmount = perAmount * paidCount;   // 결제 완료 금액
+
+  let remainAmount = totalAmount - paidAmount;
+  let progress = Math.min(100, Math.round((paidAmount / totalAmount) * 100));
+
+  // 광고판/결제 정보 표시
+  let infoBox = document.getElementById("payment-info");
+  // 1 / n
+  infoBox.innerHTML = `
+    <p><strong>광고판명 :</strong> ${partyData.poster}</p>
+    <p><strong>총 금액 :</strong> ${totalAmount.toLocaleString()} 원</p>
+    <p><strong>현재 참여 인원 :</strong> ${paidCount} 명</p>
+    <p><strong>참여 가능 인원 수 :</strong> ${headcount} 명</p>
+    <p><strong>1인당 결제 금액 :</strong> 
+        <span style="color:var(--accent-2); font-weight:700;">
+          ${perAmount.toLocaleString()} 원
+        </span>
+      </p>
+    `;
+
+  // 진행률 바 업데이트(자유 결제시 미표시)
+  document.getElementById("progress-fill").style.width = progress + "%";
+  document.getElementById("progress-text").textContent = progress + "%";
+  document.getElementById("remain-text").textContent = `남은 금액: ${remainAmount.toLocaleString()} 원`;
+
+  // 결제 수단 선택 시 폼 UI 변경
+  const paymentMethod = document.getElementById("payment-method");
+  const paymentForm = document.getElementById("payment-form");
+
+  paymentMethod.addEventListener("change", updateForm);
+  updateForm();
+
+  function updateForm() {
+    let method = paymentMethod.value;
+    if (method === "card") {
+      paymentForm.innerHTML = `
+        <label>카드 번호</label>
+        <input type="text" placeholder="0000-0000-0000-0000" maxlength="19">
+        <label>유효기간</label>
+        <input type="text" placeholder="MM/YY" maxlength="5">
+        <label>CVC</label>
+        <input type="text" placeholder="123" maxlength="3">
+      `;
+    } else if (method === "account") {
+      paymentForm.innerHTML = `
+        <label>은행 선택</label>
+        <select>
+          <option>국민은행</option>
+          <option>신한은행</option>
+          <option>하나은행</option>
+          <option>우리은행</option>
+        </select>
+        <label>계좌번호</label>
+        <input type="text" placeholder="000-0000-0000">
+      `;
+    }
+  }
+
+  // 결제 완료 처리
+  function completePayment() {
+    if (partyData.paymentType === "payment2") {
+      // 자유 결제 금액 확인
+      let inputAmount = parseInt(document.getElementById("free-amount").value, 10);
+      if (!inputAmount || inputAmount <= 0) {
+        alert("결제 금액을 입력하세요!");
+        return;
+      }
+
+      if (!partyData.paidPayments) {
+        partyData.paidPayments = [];
+      }
+
+      // 같은 사람이 여러 번 자유 결제 가능하게 할지, 1회만 가능하게 할지 선택 가능
+      partyData.paidPayments.push({ user: currentUser, amount: inputAmount });
+
+      localStorage.setItem("partyData", JSON.stringify(partyData));
+      alert(`${inputAmount.toLocaleString()} 원 결제가 완료되었습니다!`);
+      window.location.href = "party-detail.html";
+    } else {
+      // 1 / n 결제
+      if (!partyData.paidParticipants) {
+        partyData.paidParticipants = [];
+      }
+      if (!partyData.paidParticipants.includes(currentUser)) {
+        partyData.paidParticipants.push(currentUser);
+        localStorage.setItem("partyData", JSON.stringify(partyData));
+        alert("결제가 완료되었습니다! 파티 상세창을 확인해 주세요. ");
+        window.location.href = "party-detail.html";
+      } else {
+        alert("이미 결제를 완료했습니다!");
+      }
+    }
+  }
+</script>
+</body>
+</html>
