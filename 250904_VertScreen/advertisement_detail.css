@@ -1,0 +1,120 @@
+/* ===== 제목 h2 ===== */
+h2 {
+  margin: 0 20px;
+  text-align: center;
+}
+#naver-map-section h2 {
+  margin-bottom: 20px; /* 텍스트와 지도 사이 간격 */
+}
+
+  #naver-map-section p {
+    margin: 5px 0; /* 위아래 간격을 최소화 */
+    text-align: center;
+    font-weight: bold;
+  }
+
+  /* 이미지 위/아래 간격 최소화 */
+  #naver-map-section img {
+    display: block;
+    margin: 10px auto 0; /* 위 10px, 아래 0, 중앙 정렬 */
+    border-radius: 8px;
+  }
+
+  /* h2와 p 사이 간격 조정 */
+  #naver-map-section h2 {
+    margin-bottom: 5px;
+    text-align: center;
+  }
+
+/* 이미지 박스 */
+.map-and-calendar div:first-child {
+  flex-shrink: 0;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+
+/* 광고판 금액 박스 */
+.map-and-calendar div:last-child {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start; /* 상단 정렬로 변경 */
+  align-items: center;         /* 금액을 중앙 정렬 */
+  width: 500px; 
+  height: 375px;
+  padding: 25px 30px;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  background-color: rgba(11,15,26,.82);
+  box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+}
+
+/* 제목 텍스트 */
+.map-and-calendar div:last-child h3 {
+  font-size: 28px;
+  font-weight: 900;
+  color: whitesmoke;
+  margin-bottom: 10px; /* 제목과 금액 사이 간격 줄임 */
+  text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+}
+
+/* 금액 텍스트 */
+#detailAmount {
+  font-size: 60px;       /* 더 크게 강조 */
+  font-weight: 900;
+  color: #38BDF8;
+  text-align: center;
+  margin: 0;             /* 중앙으로 올리기 위해 상하 마진 제거 */
+  letter-spacing: 2px;
+  text-shadow: 2px 2px 4px rgba(0,0,0,0.35);
+  width: 100%;
+}
+
+/* 광고 제안 내용 */
+#detailTitle {
+  font-size: 20px;
+  font-weight: 700;
+  margin-bottom: 10px;
+  color: black;
+}
+
+#detailContent {
+  font-size: 16px;
+  line-height: 1.6;
+  color: black;
+}
+
+/* Party & Cancel Buttons */
+.pnc-btn {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.make-party, .cancel {
+  background: #38BDF8;
+  margin: 15px;
+  width: 300px;
+  height: 50px;
+  font-size: 16px;
+  font-weight: 800;
+  color: #dbeafe;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  text-align: center;
+  line-height: 50px;
+}
+
+.make-party:hover, .cancel:hover {
+  background: #38BDF8;
+  transform: translateY(-3px);
+  box-shadow: 0 12px 32px rgba(56,189,248,0.45);
+}
+
+.make-party:active, .cancel:active {
+  transform: translateY(0);
+  box-shadow: 0 6px 18px rgba(29,161,242,0.35);
+}
