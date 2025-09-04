@@ -58,7 +58,7 @@
       justify-content: space-between;
       font-size: 16px;
       transition: all 0.2s;
-      cursor: pointer; /* 클릭 가능하도록 커서 변경 */
+      cursor: pointer;
     }
 
     .party-item:hover {
@@ -66,26 +66,32 @@
       background: rgba(29, 161, 242, 0.1);
     }
 
-    /* 파티 정보 */
+    /* --- 오버플로우 처리 --- */
     .party-info {
       display: flex;
       align-items: center;
       gap: 20px;
       flex: 1;
+      min-width: 0; /* flex 아이템이 부모를 넘어설 때 크기가 줄어들도록 설정 */
     }
 
     .party-title {
       font-weight: bold;
-      min-width: 200px;
-      margin-right: 8em;
+      flex-grow: 1; /* 가능한 많은 공간을 차지 */
+      flex-shrink: 1; /* 공간이 부족할 때 줄어들도록 함 */
+      white-space: nowrap; /* 텍스트가 한 줄로 표시되도록 강제 */
+      overflow: hidden; /* 영역을 벗어나는 텍스트 숨김 */
+      text-overflow: ellipsis; /* 숨겨진 텍스트를 ...으로 표시 */
     }
 
     .party-progress {
       display: flex;
       align-items: center;
       gap: 10px;
+      flex-shrink: 0; /* 진행률 부분은 크기가 줄어들지 않도록 설정 */
     }
-    
+    /* ---------------------- */
+
     .funding-text {
         margin-left: 15px;
         font-size: 15px;
@@ -117,7 +123,6 @@
       border-radius: 10px;
     }
 
-    /* 애니메이션 */
     @keyframes fillWater {
       from { width: 0; }
       to { width: var(--target-width); }
@@ -128,9 +133,9 @@
       to { background-position: 0% 0; }
     }
 
-    /* 리뷰 버튼 */
     .review-btn {
       display: none;
+      margin-left: 4em;
       background: var(--accent);
       color: #000;
       padding: 6px 12px;
@@ -194,9 +199,8 @@
       window.location.href = 'login.html';
     }
 
-    // 리뷰 작성 기능 (이벤트 버블링 중단 기능 추가)
     function writeReview(event, partyId) {
-      event.stopPropagation(); // 부모 요소(party-item)의 클릭 이벤트 전파를 막음
+      event.stopPropagation();
       alert(`'${partyId}' 파티의 리뷰 작성 페이지로 이동합니다.`);
       window.location.href = `review_detail.html?party=${partyId}`;
     }
@@ -224,8 +228,6 @@
         let paidAmount = paidCount * perAmount;
         let progress = Math.min(100, Math.round((paidAmount / totalAmount) * 100));
 
-        // 파티 아이템에 클릭 이벤트 추가
-        // 리뷰 버튼 클릭 시 event.stopPropagation()이 필요하므로 event 전달
         const partyItemHTML = `
           <div class="party-item" data-party="${partyData.title}" data-progress="${progress}" onclick="location.href='party-detail.html'">
             <div class="party-info">
