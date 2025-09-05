@@ -113,7 +113,7 @@
       </div>
 
       <div class="proposal">
-        <input type="text" placeholder="검색 내용을 입력하세요">
+        <input type="text" id="searchInput" placeholder="검색 내용을 입력하세요">
         <a href="./party-make01.html"><button>파티원 모집 하기</button></a>
       </div>
   </main>
@@ -181,15 +181,13 @@
     };
 
     const adList = document.querySelector(".ad-list");
+    const searchInput = document.getElementById('searchInput');
     const partyList = JSON.parse(localStorage.getItem("partyList")) || [];
 
-    // createdAt 기준 내림차순 정렬
+    // 초기 파티 목록 렌더링
     partyList.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
-
-    // adList 안의 하드코딩된 첫 번째 아이템 찾기
     const hardcodedFirst = adList.firstElementChild;
 
-    // 정렬된 리스트 순서대로 출력
     partyList.forEach(post => {
       const newItem = document.createElement("div");
       newItem.classList.add("ad-item");
@@ -201,37 +199,53 @@
       let paidAmount = paidCount * perAmount;
       let progress = Math.min(100, Math.round((paidAmount / totalAmount) * 100));
 
+      // 검색 필터링을 위해 파티 제목과 작성자 정보를 데이터 속성으로 추가합니다.
+      newItem.dataset.title = post.title.toLowerCase();
+      newItem.dataset.author = post.author.toLowerCase();
+
       newItem.innerHTML = `
-    <div class="post-info">
-      [${post.author}] - 제목: ${post.title} 
-      (${paidCount}/${headcount}) - 
-      ${new Date(post.createdAt).toLocaleDateString()}
-    </div>
-    <div class="progress-wrap" style="margin-top:8px;">
-      <div class="progress-bar">
-        <div class="progress-fill" style="--target-width: ${progress}%;"></div>
-      </div>
-      <small>진행률: ${progress}%</small>
-    </div>
-  `;
+        <div class="post-info">
+          [${post.author}] - 제목: ${post.title} 
+          (${paidCount}/${headcount}) - 
+          ${new Date(post.createdAt).toLocaleDateString()}
+        </div>
+        <div class="progress-wrap" style="margin-top:8px;">
+          <div class="progress-bar">
+            <div class="progress-fill" style="--target-width: ${progress}%;"></div>
+          </div>
+          <small>진행률: ${progress}%</small>
+        </div>
+      `;
 
       newItem.addEventListener("click", () => {
         localStorage.setItem("selectedParty", JSON.stringify(post));
         window.location.href = "party-detail.html";
       });
 
-      // 하드코딩 아이템 위에 정렬된 파티를 추가
       adList.insertBefore(newItem, hardcodedFirst);
     });
 
-    const newParty = {
-      title: inputTitle,
-      author: currentUser,
-      amount: inputAmount,
-      headcount: inputHeadcount,
-      // ...기타 데이터
-      createdAt: new Date().toISOString()   // 생성 시점 기록
-    };
+    // 검색 기능을 review.html 스타일로 수정
+    function filterPartyList(searchTerm) {
+      const searchTermLower = searchTerm.toLowerCase();
+      const allItems = adList.querySelectorAll('.ad-item');
+
+      allItems.forEach(item => {
+        // 하드코딩된 항목과 동적으로 생성된 항목 모두에서 텍스트를 가져와 비교합니다.
+        const itemText = item.textContent.toLowerCase();
+
+        if (itemText.includes(searchTermLower)) {
+          item.style.display = 'block'; // 검색어와 일치하면 보이게 설정
+        } else {
+          item.style.display = 'none';  // 일치하지 않으면 숨김
+        }
+      });
+    }
+
+    // 검색 이벤트 리스너
+    searchInput.addEventListener('input', () => {
+      filterPartyList(searchInput.value);
+    });
   </script>
 </body>
 
