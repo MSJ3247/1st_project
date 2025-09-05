@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="ko">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -10,38 +11,56 @@
     .progress-bar {
       width: 100%;
       height: 10px;
-      background: #1e293b; /* 기존 배경색 유지 */
+      background: #1e293b;
+      /* 기존 배경색 유지 */
       border-radius: 10px;
       overflow: hidden;
       position: relative;
     }
+
     .progress-fill {
       height: 100%;
-      width: 0; /* 애니메이션 시작을 위해 너비를 0으로 설정 */
+      width: 0;
+      /* 애니메이션 시작을 위해 너비를 0으로 설정 */
       background: linear-gradient(90deg, #1DA1F2, #38BDF8, #60A5FA);
       background-size: 200% 100%;
       /* 'fillWater' 애니메이션을 통해 너비가 채워지고, 'shimmer'로 반짝이는 효과를 줌 */
       animation: fillWater 2s ease forwards, shimmer 3s linear infinite;
       border-radius: 10px;
     }
+
     /* 너비를 0에서 목표치까지 채우는 애니메이션 */
     @keyframes fillWater {
-      from { width: 0; }
-      to { width: var(--target-width); } /* JavaScript에서 설정할 변수 */
+      from {
+        width: 0;
+      }
+
+      to {
+        width: var(--target-width);
+      }
+
+      /* JavaScript에서 설정할 변수 */
     }
+
     /* 배경 그래디언트를 움직여 반짝이는 효과를 주는 애니메이션 */
     @keyframes shimmer {
-      from { background-position: 200% 0; }
-      to { background-position: 0% 0; }
+      from {
+        background-position: 200% 0;
+      }
+
+      to {
+        background-position: 0% 0;
+      }
     }
   </style>
-  </head>
+</head>
+
 <body>
   <header class="site-header">
     <div class="nav-wrap">
       <div class="brand">
         <a href="./vertscreen_main.html">
-        <img src="./VertScreen_logo.png" alt="VertScreen Logo">
+          <img src="./VertScreen_logo.png" alt="VertScreen Logo">
         </a>
       </div>
       <nav class="nav">
@@ -71,117 +90,118 @@
 
     <div class="ad-list">
 
-    <a href="./party-detail-hardcoding1.html">
-      <div class="ad-item">
-        [고길동] - 제목: 희동이 생일기념 파티 (100/100) - 2025. 05. 31
-        <div class="progress-wrap" style="margin-top:8px;">
-        <div class="progress-bar">
-        <div class="progress-fill" style="--target-width: 100%;"></div>
+      <a href="./party-detail-hardcoding1.html">
+        <div class="ad-item">
+          [고길동] - 제목: 희동이 생일기념 파티 (100/100) - 2025. 05. 31
+          <div class="progress-wrap" style="margin-top:8px;">
+            <div class="progress-bar">
+              <div class="progress-fill" style="--target-width: 100%;"></div>
+            </div>
+            <small>진행률: 100%</small>
+          </div>
         </div>
-        <small>진행률: 100%</small>
-        </div>
+      </a>
+
+      <div class="pagination">
+        <button>&laquo;</button>
+        <button class="active">1</button>
+        <button>2</button>
+        <button>3</button>
+        <button>4</button>
+        <button>5</button>
+        <button>&raquo;</button>
       </div>
-    </a>
 
-    <div class="pagination">
-      <button>&laquo;</button>
-      <button class="active">1</button>
-      <button>2</button>
-      <button>3</button>
-      <button>4</button>
-      <button>5</button>
-      <button>&raquo;</button>
-    </div>
-
-    <div class="proposal">
-      <input type="text" placeholder="검색 내용을 입력하세요">
-      <a href="./party-make01.html"><button>파티원 모집 하기</button></a>
-    </div>
+      <div class="proposal">
+        <input type="text" placeholder="검색 내용을 입력하세요">
+        <a href="./party-make01.html"><button>파티원 모집 하기</button></a>
+      </div>
   </main>
 
   <footer>
     <p><strong>Project A P M</strong></p>
-    <p>대표자  채희수</p>
+    <p>대표자 채희수</p>
     <p>이메일 dooly123@naver.com</p>
     <p>연락처 010 1234 5678</p>
   </footer>
 
   <script>
-  /* 프로필 */
-  const profile = document.getElementById("profile");
-  const dropdown = document.getElementById("dropdown");
-  const authArea = document.getElementById("authArea");
+    /* 프로필 */
+    const profile = document.getElementById("profile");
+    const dropdown = document.getElementById("dropdown");
+    const authArea = document.getElementById("authArea");
 
-  profile.addEventListener("click", () => {
-    dropdown.style.display = dropdown.style.display === "block" ? "none" : "block";
-  });
+    profile.addEventListener("click", () => {
+      dropdown.style.display = dropdown.style.display === "block" ? "none" : "block";
+    });
     function logout() {
       localStorage.removeItem("currentUser");
       location.reload();
       window.location.href = "vertscreen_main.html";
     }
-    
+
     window.addEventListener("click", (e) => {
       if (!profile.contains(e.target)) {
         dropdown.style.display = "none";
       }
     });
-    
+
     window.onload = () => {
-    const currentUser = localStorage.getItem("currentUser");
-    if (currentUser) {
-      authArea.style.display = "none";
-      profile.style.display = "flex";
-      document.getElementById("avatar").innerText = currentUser.charAt(0).toUpperCase();
-      document.getElementById("welcomeMsg").innerText = currentUser + "님 환영합니다!";
-    }
-
-    // 보호할 링크들
-    const protectedLinks = [
-      document.querySelector('a[href="./party-make01.html"]'),
-      document.querySelector('a[href="./party-detail.html"]'),
-      document.querySelector('a[href="./party-board.html"]'),
-      document.querySelector('a[href="./payment.html"]'),
-      document.querySelector('a[href="./listTest.html"]'),
-      document.querySelector('a[href="./advertisement_detail.html"]')  
-    ];
-
-    // NodeList.forEach()가 오래된 브라우저에서 지원되지 않을 수 있으므로 Array.from으로 감싸줍니다.
-    Array.from(protectedLinks).forEach(link => {
-      // link가 null이 아닐 경우에만 이벤트 리스너를 추가합니다.
-      if (link) {
-        link.addEventListener("click", (e) => {
-          if (!currentUser) {
-            e.preventDefault();
-            alert("로그인이 필요합니다.");
-            window.location.href = "login.html";
-          }
-        });
+      const currentUser = localStorage.getItem("currentUser");
+      if (currentUser) {
+        authArea.style.display = "none";
+        profile.style.display = "flex";
+        document.getElementById("avatar").innerText = currentUser.charAt(0).toUpperCase();
+        document.getElementById("welcomeMsg").innerText = currentUser + "님 환영합니다!";
       }
-    });
-  };
 
-  const adList = document.querySelector(".ad-list");
-  const partyList = JSON.parse(localStorage.getItem("partyList")) || [];
-  
-  // 작성일(createdAt) 기준 내림차순 정렬 (최신글 맨 위)
-  partyList.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+      // 보호할 링크들
+      const protectedLinks = [
+        document.querySelector('a[href="./party-make01.html"]'),
+        document.querySelector('a[href="./party-detail.html"]'),
+        document.querySelector('a[href="./party-board.html"]'),
+        document.querySelector('a[href="./payment.html"]'),
+        document.querySelector('a[href="./listTest.html"]'),
+        document.querySelector('a[href="./advertisement_detail.html"]')
+      ];
 
-  partyList.forEach(post => {
-    const newItem = document.createElement("div");
-    newItem.classList.add("ad-item");
+      // NodeList.forEach()가 오래된 브라우저에서 지원되지 않을 수 있으므로 Array.from으로 감싸줍니다.
+      Array.from(protectedLinks).forEach(link => {
+        // link가 null이 아닐 경우에만 이벤트 리스너를 추가합니다.
+        if (link) {
+          link.addEventListener("click", (e) => {
+            if (!currentUser) {
+              e.preventDefault();
+              alert("로그인이 필요합니다.");
+              window.location.href = "login.html";
+            }
+          });
+        }
+      });
+    };
 
-    let totalAmount = post.amount;
-    let headcount = post.headcount;
-    let perAmount = Math.floor(totalAmount / headcount);
-    let paidCount = post.paidParticipants ? post.paidParticipants.length : 0;
-    let paidAmount = paidCount * perAmount;
-    let progress = Math.min(100, Math.round((paidAmount / totalAmount) * 100));
+    const adList = document.querySelector(".ad-list");
+    const partyList = JSON.parse(localStorage.getItem("partyList")) || [];
 
-  // ▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼ 수정된 innerHTML ▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼
-  // progress-bar와 progress-fill의 인라인 스타일을 제거하고,
-  // CSS 애니메이션이 참조할 --target-width 변수를 progress-fill의 인라인 스타일로 설정합니다.
-  newItem.innerHTML = `
+    // createdAt 기준 내림차순 정렬
+    partyList.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+
+    // adList 안의 하드코딩된 첫 번째 아이템 찾기
+    const hardcodedFirst = adList.firstElementChild;
+
+    // 정렬된 리스트 순서대로 출력
+    partyList.forEach(post => {
+      const newItem = document.createElement("div");
+      newItem.classList.add("ad-item");
+
+      let totalAmount = post.amount;
+      let headcount = post.headcount;
+      let perAmount = Math.floor(totalAmount / headcount);
+      let paidCount = post.paidParticipants ? post.paidParticipants.length : 0;
+      let paidAmount = paidCount * perAmount;
+      let progress = Math.min(100, Math.round((paidAmount / totalAmount) * 100));
+
+      newItem.innerHTML = `
     <div class="post-info">
       [${post.author}] - 제목: ${post.title} 
       (${paidCount}/${headcount}) - 
@@ -194,16 +214,25 @@
       <small>진행률: ${progress}%</small>
     </div>
   `;
-  // ▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲ 수정된 innerHTML ▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲
-  
-  newItem.addEventListener("click", () => {
-    localStorage.setItem("selectedParty", JSON.stringify(post));
-    window.location.href = "party-detail.html";
-  });
 
-  // 기존 파티(하드코딩된 예제)보다 위쪽에 추가
-  adList.insertBefore(newItem, adList.firstChild);
-});
+      newItem.addEventListener("click", () => {
+        localStorage.setItem("selectedParty", JSON.stringify(post));
+        window.location.href = "party-detail.html";
+      });
+
+      // 하드코딩 아이템 위에 정렬된 파티를 추가
+      adList.insertBefore(newItem, hardcodedFirst);
+    });
+
+    const newParty = {
+      title: inputTitle,
+      author: currentUser,
+      amount: inputAmount,
+      headcount: inputHeadcount,
+      // ...기타 데이터
+      createdAt: new Date().toISOString()   // 생성 시점 기록
+    };
   </script>
 </body>
+
 </html>
