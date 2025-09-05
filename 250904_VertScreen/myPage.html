@@ -70,6 +70,7 @@
     .party-info {
       display: flex;
       align-items: center;
+      justify-content: space-between;
       gap: 20px;
       flex: 1;
       min-width: 0;
@@ -284,7 +285,7 @@
       if (partyList && Array.isArray(partyList)) {
         // ▼▼▼▼▼ 수정된 부분 (forEach에 index 추가) ▼▼▼▼▼
         partyList.forEach((partyData, index) => {
-          if (partyData.participants && partyData.participants.includes(currentUser)) {
+          if (partyData.paidParticipants && partyData.paidParticipants.includes(currentUser)) {
             participatingPartiesFound = true;
 
             let totalAmount = partyData.amount;
