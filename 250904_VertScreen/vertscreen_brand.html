@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html>
-
 <head>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <link rel="stylesheet" href="./VertScreen_mainStyle.css">
@@ -8,7 +7,6 @@
     main {
       text-align: center;
     }
-
     /* 전체 배경 */
     body {
       margin: 0;
@@ -74,6 +72,36 @@
     .dropdown { display:none; position:absolute; top:48px; right:0; background:var(--panel); border:1px solid var(--line); border-radius:var(--radius); overflow:hidden; min-width:140px; box-shadow: var(--shadow);}
     .dropdown a, .dropdown button { display:block; width:100%; padding:12px; background:none; border:none; color:var(--text); text-align:left; cursor:pointer; font-size:14px; }
     .dropdown a:hover, .dropdown button:hover { background:#22314b; }
+
+        /* CTA 버튼 */
+    .cta-btn {
+    display: block;
+    margin: 40px auto;
+    width: 300px;              /* 버튼 가로 크기 (필요하면 더 크게 조절) */
+    padding: 18px 0;           /* 세로 여백 */
+    font-size: 20px;
+    font-weight: 900;
+    border: none;
+    border-radius: var(--radius);
+    background: var(--accent);
+    color: #fff;
+    cursor: pointer;
+    box-shadow: 0 8px 24px rgba(29,161,242,0.4);
+    transition: all .3s ease;
+    text-align: center;
+    }
+
+    /* hover & active 효과 */
+    .cta-btn:hover {
+    background: var(--accent-2);
+    transform: translateY(-3px);
+    box-shadow: 0 12px 32px rgba(56,189,248,0.45);
+    }
+
+    .cta-btn:active {
+    transform: translateY(0);
+    box-shadow: 0 6px 18px rgba(29,161,242,0.35);
+    }
   </style>
   </head>
 
@@ -120,6 +148,7 @@
       <p>부분을 완화하고자 이 프로젝트를 진행했습니다.</p>
       <p>리뷰 기능을 통해 서로의 경험을 공유할 수 있으며</p>
       <p>더 나은 방향으로 발전할 수 있는 계기가 될 수 있습니다.</p>
+      <a href="./party-board.html"><button class="cta-btn">파티 모집하러 가기</button></a>
     </main>
     <footer>
       <p><strong>Project A P M</strong></p>
@@ -128,17 +157,19 @@
       <p>연락처 010 1234 5678</p>
     </footer>
     <script>
-  (function () {
+   (function () {
     const authArea = document.getElementById("authArea");
     const profile  = document.getElementById("profile");
     const dropdown = document.getElementById("dropdown");
 
+    // 로그아웃 전역 등록 (onclick에서 사용)
     function logout() {
       localStorage.removeItem("currentUser");
       location.reload();
     }
     window.logout = logout;
 
+    // 드롭다운 토글 + 바깥 클릭 닫기
     if (profile && dropdown) {
       profile.addEventListener("click", (e) => {
         e.stopPropagation();
@@ -149,6 +180,7 @@
       });
     }
 
+    // 로그인 상태 반영
     const currentUser = localStorage.getItem("currentUser");
     if (currentUser && authArea && profile) {
       authArea.style.display = "none";
@@ -157,15 +189,11 @@
       document.getElementById("welcomeMsg").innerText = `${currentUser}님 환영합니다!`;
     }
 
-    // 보호할 링크들
+    // 보호 링크: 미로그인 시 차단
     const protectedLinks = [
-      document.querySelector('a[href="./party-make01.html"]'),
-      document.querySelector('a[href="./party-detail.html"]'),
       document.querySelector('a[href="./party-board.html"]'),
-      document.querySelector('a[href="./payment.html"]'),
-      document.querySelector('a[href="./advertisement.html"]'),
-      document.querySelector('a[href="./listTest.html"]'),
-      document.querySelector('a[href="./advertisement_detail.html"]')  
+      document.querySelector('a[href="listTest.html"]'), // 광고 제안 (추후 실제 링크로 교체)
+      document.querySelector('main a[href="./party-board.html"]')
     ];
     protectedLinks.forEach(link => {
       if (!link) return;
@@ -180,9 +208,5 @@
     });
   })();
 </script>
-
-  </body>
-
-
+</body>
 </html>
-
