@@ -5,14 +5,21 @@
   <title>마커 클릭 정보 표시</title>
   <link rel="stylesheet" href="./VertScreen_mainStyle.css" />
   <link rel="stylesheet" href="./advertisement.css">
+  <style>
+    /* 프로필 드롭다운 */
+    .profile { position:relative; display:none; align-items:center; cursor:pointer; }
+    .avatar { width:36px; height:36px; border-radius:50%; background:var(--accent); display:flex; align-items:center; justify-content:center; font-weight:800; color:#000; }
+    .dropdown { display:none; position:absolute; top:48px; right:0; background:var(--panel); border:1px solid var(--line); border-radius:var(--radius); overflow:hidden; min-width:140px; box-shadow: var(--shadow);}
+    .dropdown a, .dropdown button { display:block; width:100%; padding:12px; background:none; border:none; color:var(--text); text-align:left; cursor:pointer; font-size:14px; }
+    .dropdown a:hover, .dropdown button:hover { background:#22314b; }
+  </style>
 </head>
 <body>
-  <!--header-->
   <header class="site-header">
     <div class="nav-wrap">
       <div class="brand">
         <a href="vertscreen_main.html">
-        <img src="raw-Photoroom.png" alt="VertScreen Logo">
+        <img src="VertScreen_logo.png" alt="VertScreen Logo">
         </a>
       </div>
       <nav class="nav">
@@ -23,28 +30,31 @@
         <a href="review.html">리뷰 게시판</a>
       </nav>
       <div class="spacer"></div>
-      <div class="actions">
-        <button class="btn">로그인</button>
-        <button class="btn primary">회원가입</button>
+      <div class="actions" id="authArea">
+        <a href="login.html" class="btn">로그인</a>
+        <a href="login.html?mode=signup" class="btn primary">회원가입</a>
+      </div>
+      <div class="profile" id="profile">
+        <div class="avatar" id="avatar">U</div>
+        <div class="dropdown" id="dropdown">
+          <div style="padding:12px;color:var(--muted)" id="welcomeMsg">사용자님 환영합니다!</div>
+          <a href="./myPage.html">마이페이지</a>
+          <button onclick="logout()">로그아웃</button>
+        </div>
       </div>
     </div>
   </header>
-  <!--header end-->
-
-  <!-- 네이버 맵 화면 -->
   <section id="naver-map-section">
   <h2>광고를 희망하시는</h2>
   <h2>주소를 입력해 주세요</h2>
   <div id="map"></div>
   </section>
-  <!-- 광고주가 찍을 마크 입력 받는곳-->
   <div class="address-search">
   <input type="text" id="address" placeholder="주소를 입력하세요">
   <button onclick="searchAddress()">완료</button>
   </div>
 
-  <!--  파티 구성을 위한 이미지 업로드 및 내용-->
-    <div>
+  <div>
     <h2>광고 제안을 위한 이미지 업로드 및 내용</h2>
     <div class="party-ad">
       <div>
@@ -60,85 +70,124 @@
     </div>
     </div>
     
-    <!-- ⑥⑦ 제안/취소 버튼 -->
     <section class="pnc-btn">
         <button class="make-party" onclick="signup()">제안 시작</button>
         <a href="./vertscreen_main.html"><button class="cancel">취소</button></a>
     </section>
 
-  <!--footer start-->
   <footer>
     <div></div>
     <div></div>
   </footer>
-  <!--footer end-->
+  <script>
+  // ===============================================
+  // 로그인 정보 저장 및 UI 변경 로직 (추가된 부분)
+  // ===============================================
+  const profile = document.getElementById("profile");
+  const dropdown = document.getElementById("dropdown");
+  const authArea = document.getElementById("authArea");
 
-<script>
-  // 주소 검색 → 좌표/마커 갱신
-  function searchAddress() {
-  const address = document.getElementById("address").value.trim();
-  if (!address) {
-    alert("주소를 입력해주세요.");
-    return;
-  }
-
-  // 주소가 입력되었을 때 alert
-  alert("주소가 확인되었습니다: " + address);
-  }
-    // 이미지 미리보기
-    document.getElementById('imageInput').addEventListener('change', function(event) {
-      const file = event.target.files[0];
-      const reader = new FileReader();
-      reader.onload = function(e) {
-        document.getElementById('imagePreview').src = e.target.result;
-      };
-      if (file) reader.readAsDataURL(file);
-    });
-
-function signup(){
-  const amountValue = document.getElementById("textTitle").value.trim();
-  const contentValue = document.getElementById("textInput").value.trim();
-  const addressValue = document.getElementById("address").value.trim(); // 주소 가져오기
-
-  if (!amountValue) {
-    alert("금액을 입력해주세요.");
-    document.getElementById("textTitle").focus();
-    return;
-  }
-  if (!contentValue) {
-    alert("내용을 입력해주세요.");
-    document.getElementById("textInput").focus();
-    return;
-  }
-  if (!addressValue) {
-    alert("주소를 입력해주세요.");
-    document.getElementById("address").focus();
-    return;
-  }
-
-  let adList = JSON.parse(localStorage.getItem("adList")) || [];
-
-  // 마커 좌표 대신 주소를 바로 저장
-  const newAd = {
-    amount: amountValue,
-    content: contentValue,
-    uploadImg: document.getElementById("imagePreview").src,
-    address: addressValue,
-    createdAt: new Date().toLocaleString()
+  // 페이지 로드 시 로그인 상태 확인
+  window.onload = () => {
+    const currentUser = localStorage.getItem("currentUser");
+    if (currentUser) {
+      authArea.style.display = "none";
+      profile.style.display = "flex";
+      document.getElementById("avatar").innerText = currentUser.charAt(0).toUpperCase();
+      document.getElementById("welcomeMsg").innerText = currentUser + "님 환영합니다!";
+    }
   };
 
-  adList.push(newAd);
-  localStorage.setItem("adList", JSON.stringify(adList));
+  // 프로필 클릭 시 드롭다운 토글
+  profile.addEventListener("click", () => {
+    dropdown.style.display = dropdown.style.display === "block" ? "none" : "block";
+  });
+  
+  // 외부 클릭 시 드롭다운 닫기
+  window.addEventListener("click", (e) => {
+    if (!profile.contains(e.target)) {
+      dropdown.style.display = "none";
+    }
+  });
 
-  // 리스트 페이지로 이동
-  window.location.href = "./listTest.html";
-}
-  // 이미지, 금액, 제목, 내용 업데이트
-  document.getElementById("detailImg").src = ad.uploadImg || "./no_image.png";
-  document.getElementById("detailAmount").textContent = ad.amount + "원";
-  document.getElementById("detailTitle").textContent = "광고 제안"; // 필요시 ad.content 일부나 제목 추가 가능
-  document.getElementById("detailContent").textContent = ad.content;
+  // 로그아웃 함수
+  function logout() {
+    localStorage.removeItem("currentUser");
+    location.reload();
+  }
+  // ===============================================
+  // 기존 advertisement.html 스크립트
+  // ===============================================
 
+  // 주소 검색 → 좌표/마커 갱신
+  function searchAddress() {
+    const address = document.getElementById("address").value.trim();
+    if (!address) {
+      alert("주소를 입력해주세요.");
+      return;
+    }
+    // 주소가 입력되었을 때 alert
+    alert("주소가 확인되었습니다: " + address);
+  }
+  
+  // 이미지 미리보기
+  document.getElementById('imageInput').addEventListener('change', function(event) {
+    const file = event.target.files[0];
+    const reader = new FileReader();
+    reader.onload = function(e) {
+      document.getElementById('imagePreview').src = e.target.result;
+    };
+    if (file) reader.readAsDataURL(file);
+  });
+
+  // '제안 시작' 버튼 클릭 시
+  function signup(){
+    // 로그인 상태 확인 (추가)
+    const currentUser = localStorage.getItem("currentUser");
+    if (!currentUser) {
+      alert("로그인이 필요합니다.");
+      window.location.href = "login.html";
+      return;
+    }
+
+    const amountValue = document.getElementById("textTitle").value.trim();
+    const contentValue = document.getElementById("textInput").value.trim();
+    const addressValue = document.getElementById("address").value.trim(); // 주소 가져오기
+
+    if (!amountValue) {
+      alert("금액을 입력해주세요.");
+      document.getElementById("textTitle").focus();
+      return;
+    }
+    if (!contentValue) {
+      alert("내용을 입력해주세요.");
+      document.getElementById("textInput").focus();
+      return;
+    }
+    if (!addressValue) {
+      alert("주소를 입력해주세요.");
+      document.getElementById("address").focus();
+      return;
+    }
+
+    let adList = JSON.parse(localStorage.getItem("adList")) || [];
+
+    // 마커 좌표 대신 주소를 바로 저장
+    const newAd = {
+      author: currentUser, // 작성자 정보 추가
+      amount: amountValue,
+      content: contentValue,
+      uploadImg: document.getElementById("imagePreview").src,
+      address: addressValue,
+      createdAt: new Date().toLocaleString()
+    };
+
+    adList.push(newAd);
+    localStorage.setItem("adList", JSON.stringify(adList));
+
+    // 리스트 페이지로 이동
+    window.location.href = "./listTest.html";
+  }
 </script>
 </body>
 </html>
