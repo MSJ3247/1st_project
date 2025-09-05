@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<!-- saved from url=(0049)http://192.168.0.5:5500/advertisement_detail.html -->
+<html lang="ko"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  
+  <title>광고 제안 상세</title>
+  <link rel="stylesheet" href="VertScreen_mainStyle.css">
+  <link rel="stylesheet" href="advertisement_detail.css">
+  <script src="./광고 제안 게시판 2_files/maps.js.다운로드"></script>
+</head>
+<body>
+  <!-- header -->
+  <header class="site-header">
+    <div class="nav-wrap">
+      <div class="brand">
+        <a href="vertscreen_main.html">
+          <img src="VertScreen_logo.png" alt="VertScreen Logo">
+        </a>
+      </div>
+      <nav class="nav">
+        <a href="vertscreen_advertlist.html">광고 종류</a>
+        <a href="vertscreen_brand.html">브랜드 가치</a>
+        <a href="party-make01.html">파티 모집</a>
+        <a href="advertisement.html">광고 제안</a>
+        <a href="review.html">리뷰 게시판</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <!-- ① 네이버 맵 -->
+  <section id="naver-map-section">
+    <!-- 주소 부분 -->
+    <div class="address-box">
+      <h2>입력된 주소</h2>
+      <p>잠실역 7번 출구</p>
+    </div>
+
+    <!-- 지도 -->
+    <div id="map"></div>
+
+    <!-- 이미지 + 금액 -->
+    <div class="map-and-calendar">
+      <div class="image-box">
+        <h3>이미지 샘플</h3>
+        <img src="./광고 제안 하드코딩 이미지1.jfif" id="detailImg" alt="업로드 이미지">
+      </div>
+      <div class="amount-box">
+        <h3>광고판 금액</h3>
+        <p id="detailAmount">880,000</p>
+      </div>
+    </div>
+  </section>
+
+    <!-- ④ 광고 제안 내용 -->
+    <section style="margin-top:30px;">
+      <h3>광고 제안 내용</h3>
+      <div style="background:#f1f5f9; padding:20px; border-radius:8px;">
+        <h4 id="detailTitle" style="margin-bottom:10px;"></h4>
+        <p id="detailContent">✓ 운영시간 :05시~01시 (20시간)
+        ✓ 20초 기준 1일 120회
+
+        1 - 역내 유동 인구가 많은 구역
+        개찰구, 환승통로, 출구, 에스컬레이터 주변,많은승객에게 노출
+
+        2 - 가로형에 비해 몰입도가 높은 세로형 콘텐츠
+
+        05:00 ~ 01:00 (일20시간운영)
+
+        *2면 1세트 구성 (디자인 파일 1가지만 가능)*
+        사운드 지원X</p>
+      </div>
+    </section>
+
+    <!-- ⑤ 문의하기 + ⑥ 취소 -->
+    <div class="pnc-btn" style="margin-top:30px;">
+      <a href="./listTest.html" id="inquiryBtn">
+      <button class="make-party" onclick="alert('이메일이 전송되었습니다')">문의하기</button>
+      </a>
+      <button class="cancel" onclick="window.location.href='advertisement.html'">취소</button>
+    </div>
+  </main>
+<script>
+	// <![CDATA[  <-- For SVG support
+	if ('WebSocket' in window) {
+		(function () {
+			function refreshCSS() {
+				var sheets = [].slice.call(document.getElementsByTagName("link"));
+				var head = document.getElementsByTagName("head")[0];
+				for (var i = 0; i < sheets.length; ++i) {
+					var elem = sheets[i];
+					var parent = elem.parentElement || head;
+					parent.removeChild(elem);
+					var rel = elem.rel;
+					if (elem.href && typeof rel != "string" || rel.length == 0 || rel.toLowerCase() == "stylesheet") {
+						var url = elem.href.replace(/(&|\?)_cacheOverride=\d+/, '');
+						elem.href = url + (url.indexOf('?') >= 0 ? '&' : '?') + '_cacheOverride=' + (new Date().valueOf());
+					}
+					parent.appendChild(elem);
+				}
+			}
+			var protocol = window.location.protocol === 'http:' ? 'ws://' : 'wss://';
+			var address = protocol + window.location.host + window.location.pathname + '/ws';
+			var socket = new WebSocket(address);
+			socket.onmessage = function (msg) {
+				if (msg.data == 'reload') window.location.reload();
+				else if (msg.data == 'refreshcss') refreshCSS();
+			};
+			if (sessionStorage && !sessionStorage.getItem('IsThisFirstTime_Log_From_LiveServer')) {
+				console.log('Live reload enabled.');
+				sessionStorage.setItem('IsThisFirstTime_Log_From_LiveServer', true);
+			}
+		})();
+	}
+
+      // 비로그인 시 문의하기 버튼 숨기기
+      const currentUser = localStorage.getItem("currentUser"); // 로그인 정보 가져오기
+      const inquiryBtn = document.getElementById("inquiryBtn");
+      if (!currentUser && inquiryBtn) {
+        inquiryBtn.style.display = "none";
+      }
+
+	else {
+		console.error('Upgrade your browser. This Browser is NOT supported WebSocket for Live-Reloading.');
+	}
+	// ]]>
+</script>
+
+</body></html>

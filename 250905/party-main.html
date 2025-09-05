@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>파티 모집 게시판 - VertScreen</title>
+  <link rel="stylesheet" href="./VertScreen_mainStyle.css">
+  <link rel="stylesheet" href="./party-main.css">
+</head>
+<body>
+  <!--header-->
+  <header class="site-header">
+    <div class="nav-wrap">
+      <div class="brand">
+        <a href="./vertscreen_main.html">
+        <img src="./VertScreen_logo.png" alt="VertScreen Logo">
+        </a>
+      </div>
+      <nav class="nav">
+        <a href="./vertscreen_advertlist.html">광고 종류</a>
+        <a href="./vertscreen_brand.html">브랜드 가치</a>
+        <a href="./party-make01.html">파티 모집</a>
+        <a href="#">광고 제안</a>
+        <a href="./party.html" id="partyLink">리뷰 게시판</a>
+      </nav>
+      <div class="spacer"></div>
+      <div class="actions" id="authArea">
+        <a href="login.html" class="btn">로그인</a>
+        <a href="login.html?mode=signup" class="btn primary">회원가입</a>
+      </div>
+      <div class="profile" id="profile">
+        <div class="avatar" id="avatar">U</div>
+        <div class="dropdown" id="dropdown">
+          <div style="padding:12px;color:var(--muted)" id="welcomeMsg">사용자님 환영합니다!</div>
+          <a href="./myPage.html">마이페이지</a>
+          <button onclick="logout()">로그아웃</button>
+        </div>
+      </div>
+    </div>
+  </header>
+  <!--header end-->
+
+  <main>
+    <h2>파티 모집 게시판</h2>
+
+    <!-- 파티 목록 -->
+    <div class="party-list" id="partyList"></div>
+
+    <!-- 페이지네이션 -->
+    <div class="pagination" id="pagination"></div>
+
+    <!-- 검색바 -->
+    <div class="search-bar">
+      <input type="text" id="searchInput" placeholder="파티의 내용 또는 파티명을 검색하세요">
+    </div>
+
+    <!-- 파티 모집 버튼 -->
+    <div class="make-party">
+      <button onclick="goToMakeParty()">파티 모집</button>
+    </div>
+  </main>
+  <footer>
+    <p><strong>Project A P M</strong></p>
+    <p>대표자 채희수</p>
+    <p>이메일 dooly123@naver.com</p>
+    <p>연락처 010 1234 5678</p>
+  </footer>
+
+  <script>
+    const partyListElement = document.getElementById('partyList');
+    const paginationElement = document.getElementById('pagination');
+    const searchInput = document.getElementById('searchInput');
+
+    const itemsPerPage = 5;
+    let currentPage = 1;
+    let partys = [];
+    let filteredpartys = [];
+
+    // 파티 리스트 렌더링
+    function renderParty() {
+      partyListElement.innerHTML = '';
+      const start = (currentPage - 1) * itemsPerPage;
+      const end = start + itemsPerPage;
+      const pageItems = filteredPartys.slice(start, end);
+
+      if (pageItems.length === 0) {
+        partyListElement.innerHTML = '<p>생성된 파티가 없습니다.</p>';
+        return;
+      }
+
+      pageItems.forEach(item => {
+        const div = document.createElement('div');
+        div.className = 'party-item';
+        div.textContent = item.title;
+        div.onclick = () => goToMakeParty(item.id);
+        partyListElement.appendChild(div);
+      });
+
+      renderPagination();
+    }
+
+    // 페이지네이션 렌더링
+    function renderPagination() {
+      paginationElement.innerHTML = '';
+      const totalPages = Math.ceil(filteredPartys.length / itemsPerPage);
+
+      // 이전 버튼
+      const prevBtn = document.createElement('button');
+      prevBtn.className = 'page-btn';
+      prevBtn.textContent = '<';
+      prevBtn.disabled = currentPage === 1;
+      prevBtn.onclick = () => { currentPage--; renderPartys(); };
+      paginationElement.appendChild(prevBtn);
+
+      // 페이지 번호
+      for (let i = 1; i <= totalPages; i++) {
+        const pageBtn = document.createElement('button');
+        pageBtn.className = 'page-btn' + (i === currentPage ? ' active' : '');
+        pageBtn.textContent = i;
+        pageBtn.onclick = () => { currentPage = i; renderPartys(); };
+        paginationElement.appendChild(pageBtn);
+      }
+
+      // 다음 버튼
+      const nextBtn = document.createElement('button');
+      nextBtn.className = 'page-btn';
+      nextBtn.textContent = '>';
+      nextBtn.disabled = currentPage === totalPages;
+      nextBtn.onclick = () => { currentPage++; renderPartys(); };
+      paginationElement.appendChild(nextBtn);
+    }
+
+    // 검색 기능
+    searchInput.addEventListener('input', () => {
+      const keyword = searchInput.value.toLowerCase();
+      filteredPartys = partys.filter(party =>
+        party.title.toLowerCase().includes(keyword)
+      );
+      currentPage = 1;
+      renderpartys();
+    });
+    
+    //로그인 및 프로필
+    const profile = document.getElementById("profile");
+    const dropdown = document.getElementById("dropdown");
+    const authArea = document.getElementById("authArea");
+
+    profile.addEventListener("click", () => {
+      dropdown.style.display = dropdown.style.display === "block" ? "none" : "block";
+    });
+    function logout() {
+      localStorage.removeItem("currentUser");
+      window.location.href = "vertscreen_main.html";
+    }
+    window.onload = () => {
+      const currentUser = localStorage.getItem("currentUser");
+      if (currentUser) {
+        authArea.style.display = "none";
+        profile.style.display = "flex";
+        document.getElementById("avatar").innerText = currentUser.charAt(0).toUpperCase();
+        document.getElementById("welcomeMsg").innerText = currentUser + "님 환영합니다!";
+      }
+    };
+    window.addEventListener("click", (e) => {
+      if (!profile.contains(e.target)) {
+        dropdown.style.display = "none";
+      }
+    });
+    window.onload = () => {
+    const currentUser = localStorage.getItem("currentUser");
+    if (currentUser) {
+      authArea.style.display = "none";
+      profile.style.display = "flex";
+      document.getElementById("avatar").innerText = currentUser.charAt(0).toUpperCase();
+      document.getElementById("welcomeMsg").innerText = currentUser + "님 환영합니다!";
+    }
+
+    // 보호할 링크들
+    const protectedLinks = [
+      document.querySelector('a[href="./party-make01.html"]'), //임시
+      document.querySelector('a[href="./party-detail.html"]'),
+      document.querySelector('a[href="./party-main.html"]'),
+      document.querySelector('a[href="./payment.html"]') 
+    ];
+
+    protectedLinks.forEach(link => {
+      link.addEventListener("click", (e) => {
+        if (!currentUser) {
+          e.preventDefault(); // 기본 이동 막기
+          alert("로그인이 필요합니다.");
+          window.location.href = "login.html"; // 로그인 페이지로 이동
+        }
+      });
+    });
+  };
+  </script>
+</body>
+</html>
+
