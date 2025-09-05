@@ -8,9 +8,36 @@
   <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.css" rel="stylesheet">
   <script src="https://oapi.map.naver.com/openapi/v3/maps.js?ncpKeyId=pq3dgwzbry"></script>
   <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js"></script>
+  <style>
+    /* ▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼ 추가된 부분 ▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼ */
+    .progress-bar {
+      width: 100%;
+      height: 10px;
+      background: #1e293b;
+      border-radius: 10px;
+      overflow: hidden;
+      position: relative;
+    }
+    .progress-fill {
+      height: 100%;
+      width: 0;
+      background: linear-gradient(90deg, #1DA1F2, #38BDF8, #60A5FA);
+      background-size: 200% 100%;
+      animation: fillWater 2s ease forwards, shimmer 3s linear infinite;
+      border-radius: 10px;
+    }
+    @keyframes fillWater {
+      from { width: 0; }
+      to { width: var(--target-width); }
+    }
+    @keyframes shimmer {
+      from { background-position: 200% 0; }
+      to { background-position: 0% 0; }
+    }
+    /* ▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲ 추가된 부분 ▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲ */
+  </style>
 </head>
 <body>
-  <!--header-->
   <header class="site-header">
     <div class="nav-wrap">
       <div class="brand">
@@ -40,14 +67,10 @@
       </div>
     </div>
   </header>
-  <!--header end-->
-
-  <!-- 지도 -->
   <div class="map" id="detail-map" style="width:1220px;height:400px;margin:20px auto;border-radius:8px;"></div>
 
   <br> 
 
-  <!-- 선택한 광고 정보 -->
   <h2>선택한 광고 상세 정보</h2>
   <div class="party-ad">
     <div>
@@ -65,7 +88,6 @@
 
   <br>
 
-  <!-- 업로드 이미지 & 제목/내용 -->
   <h2>파티 내용</h2>
   <div class="party-ad">
     <div>
@@ -77,12 +99,10 @@
     </div>
   </div>
   <br>
-  <!-- 파티원 수 및 결제 금액 -->
   <h2>파티원 수 및 결제 금액</h2>
   <div class="party-ad" id="payment-status">
   </div>
-  <!-- 진행률 바 -->
-    <div class="progress-wrap">
+  <div class="progress-wrap">
       <div class="progress-label">
         <span id="progress-text">진행률 : 0%</span>
         <span id="remain-text">남은 금액: 0 원</span>
@@ -190,7 +210,12 @@
         <p>현재까지 결제 완료 금액 : ${paidAmount.toLocaleString()} 원</p>
         <p>남은 금액 : ${remainAmount.toLocaleString()} 원</p>
       `;
-      document.getElementById("progress-fill").style.width = progress + "%";
+
+      // ▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼ 수정된 부분 ▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼
+      const progressFill = document.getElementById("progress-fill");
+      progressFill.style.setProperty('--target-width', `${progress}%`);
+      // ▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲ 수정된 부분 ▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲
+
       document.getElementById("progress-text").textContent = "진행률 : " + progress + "%";
       document.getElementById("remain-text").textContent = "남은 금액: " + remainAmount.toLocaleString() + " 원";
     }
