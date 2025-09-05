@@ -291,22 +291,59 @@
       { name: '파티 4 - 홍대입구 광고팀' },
     ];
 
-    // 리뷰 목록 렌더링
-    function renderReviews(filter = '') {
-      reviewListElement.innerHTML = '';
-      parties
-        .filter(party => party.name.toLowerCase().includes(filter.toLowerCase()))
-        .forEach(party => {
-          const div = document.createElement('div');
-          div.className = 'review-item';
-          div.textContent = party.name;
-          div.onclick = () => {
-            // 로그인 여부와 상관없이 상세 페이지로 이동
-            window.location.href = `review_detail.html?party=${encodeURIComponent(party.name)}`;
-          };
-          reviewListElement.appendChild(div);
-        });
-    }
+    // 리뷰 + 파티 목록 렌더링
+function renderReviews(filter = '') {
+  reviewListElement.innerHTML = '';
+
+  // 1. 로컬스토리지에 저장된 리뷰 불러오기
+  const reviews = JSON.parse(localStorage.getItem('reviews')) || [];
+
+  // 2. 최신순 리뷰 먼저 표시
+  const filteredReviews = reviews
+    .filter(r =>
+      r.party.toLowerCase().includes(filter.toLowerCase()) ||
+      r.content.toLowerCase().includes(filter.toLowerCase())
+    )
+    .sort((a, b) => b.timestamp - a.timestamp);
+
+  filteredReviews.forEach(review => {
+    const div = document.createElement('div');
+    div.className = 'review-item';
+    div.innerHTML = `
+      <strong>${review.party}</strong><br>
+      ${'⭐'.repeat(review.rating)} - ${review.content.substring(0, 50)}...
+    `;
+    div.onclick = () => {
+      window.location.href = `review_detail.html?party=${encodeURIComponent(review.party)}`;
+    };
+    reviewListElement.appendChild(div);
+  });
+
+  // 3. 기존 하드코딩 파티 목록은 아래쪽에 표시
+  const parties = JSON.parse(localStorage.getItem('userParties')) || [
+    { name: '파티 1 - 강남역 광고팀' },
+    { name: '파티 2 - 홍대입구 광고팀' },
+    { name: '파티 3 - 홍대입구 광고팀' },
+    { name: '파티 4 - 홍대입구 광고팀' },
+  ];
+
+  parties
+    .filter(party => party.name.toLowerCase().includes(filter.toLowerCase()))
+    .forEach(party => {
+      const div = document.createElement('div');
+      div.className = 'review-item';
+      div.textContent = party.name;
+      div.onclick = () => {
+        window.location.href = `review_detail.html?party=${encodeURIComponent(party.name)}`;
+      };
+      reviewListElement.appendChild(div);
+    });
+
+  // 4. 아무것도 없을 경우 안내 문구
+  if (reviewListElement.innerHTML.trim() === '') {
+    reviewListElement.innerHTML = '<p style="text-align:center;color:gray;">등록된 리뷰가 없습니다.</p>';
+  }
+}
 
     // 검색 이벤트
     searchInput.addEventListener('input', () => {
@@ -319,6 +356,3 @@
 </body>
 
 </html>
-
-
-
