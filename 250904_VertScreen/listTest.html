@@ -96,7 +96,7 @@
     <div class="nav-wrap">
       <div class="brand">
         <a href="./vertscreen_main.html">
-        <img src="./VertScreen_logo.png" alt="VertScreen Logo">
+          <img src="./VertScreen_logo.png" alt="VertScreen Logo">
         </a>
       </div>
       <nav class="nav">
@@ -155,6 +155,8 @@
   <script>
     document.addEventListener("DOMContentLoaded", () => {
       const adListElement = document.getElementById("adList");
+      // 검색창 요소를 가져옵니다.
+      const searchInput = document.querySelector('.proposal input[type="text"]');
       const adList = JSON.parse(localStorage.getItem("adList")) || [];
 
       adList.forEach((ad) => {
@@ -173,19 +175,37 @@
         adListElement.prepend(item);
       });
 
-      // 제안하기 버튼 클릭 이벤트 (currentUser만 확인)
+      // ▼▼▼▼▼▼▼▼▼▼ 검색 기능 구현 ▼▼▼▼▼▼▼▼▼▼
+      searchInput.addEventListener('input', () => {
+        const searchTerm = searchInput.value.toLowerCase();
+        // adListElement의 모든 자식 요소(기존 게시물 + 동적 추가 게시물)를 가져옵니다.
+        const items = adListElement.children;
+
+        // 모든 목록 항목을 순회하며 필터링합니다.
+        Array.from(items).forEach(item => {
+          const itemText = item.textContent.toLowerCase();
+          if (itemText.includes(searchTerm)) {
+            item.style.display = 'block'; // 검색어가 포함되면 보이게 합니다.
+          } else {
+            item.style.display = 'none';  // 포함되지 않으면 숨깁니다.
+          }
+        });
+      });
+      // ▲▲▲▲▲▲▲▲▲▲ 검색 기능 구현 ▲▲▲▲▲▲▲▲▲▲
+
+      // 제안하기 버튼 클릭 이벤트
       document.getElementById("proposalBtn").addEventListener("click", function () {
         const currentUser = localStorage.getItem("currentUser");
         if (!currentUser) {
           alert("로그인이 필요한 기능입니다.");
           return;
         }
-        // 로그인 상태면 제안 페이지로 이동
         window.location.href = "./advertisement.html";
       });
     });
 
- 
+    // --- 이하 기존 로그인/인증 관련 코드는 그대로 유지 ---
+
     (function () {
       const authArea = document.getElementById("authArea");
       const profile = document.getElementById("profile");
@@ -214,19 +234,8 @@
         document.getElementById("avatar").innerText = currentUser.charAt(0).toUpperCase();
         document.getElementById("welcomeMsg").innerText = `${currentUser}님 환영합니다!`;
       }
-
-      protectedLinks.forEach(link => {
-        if (!link) return;
-        link.addEventListener("click", (e) => {
-          const u = localStorage.getItem("currentUser");
-          if (!u) {
-            e.preventDefault();
-            alert("로그인이 필요합니다.");
-            location.href = "login.html";
-          }
-        });
-      });
     })();
+
     // 보호할 링크들
     const protectedLinks = [
       document.querySelector('a[href="./party-make01.html"]'),
@@ -235,8 +244,20 @@
       document.querySelector('a[href="./payment.html"]'),
       document.querySelector('a[href="./advertisement.html"]'),
       document.querySelector('a[href="./listTest.html"]'),
-      document.querySelector('a[href="./advertisement_detail.html"]') 
+      document.querySelector('a[href="./advertisement_detail.html"]')
     ];
+
+    protectedLinks.forEach(link => {
+      if (!link) return;
+      link.addEventListener("click", (e) => {
+        const u = localStorage.getItem("currentUser");
+        if (!u) {
+          e.preventDefault();
+          alert("로그인이 필요합니다.");
+          location.href = "login.html";
+        }
+      });
+    });
   </script>
 </body>
 
