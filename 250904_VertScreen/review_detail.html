@@ -420,15 +420,15 @@
 
       document.getElementById("loadMoreBtn").addEventListener("click", loadMore);
       document.getElementById("collapseBtn").addEventListener("click", loadReviews);
-      document.getElementById("resetBtn").addEventListener("click", () => {
-        if (confirm("이 파티의 리뷰를 모두 삭제하시겠습니까?")) {
-          let reviews = JSON.parse(localStorage.getItem("reviews") || "[]");
-          reviews = reviews.filter(r => r.party !== partyName);
-          localStorage.setItem("reviews", JSON.stringify(reviews));
-          loadReviews();
-          alert("리뷰 게시판이 초기화되었습니다.");
-        }
-      });
+      // document.getElementById("resetBtn").addEventListener("click", () => {
+      //   if (confirm("이 파티의 리뷰를 모두 삭제하시겠습니까?")) {
+      //     let reviews = JSON.parse(localStorage.getItem("reviews") || "[]");
+      //     reviews = reviews.filter(r => r.party !== partyName);
+      //     localStorage.setItem("reviews", JSON.stringify(reviews));
+      //     loadReviews();
+      //     alert("리뷰 게시판이 초기화되었습니다.");
+      //   }
+      // });
 
       window.onload = () => {
         // ✅ 파티 대표 이미지 로드 (partyList에서 찾기)
