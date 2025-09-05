@@ -8,21 +8,33 @@
   <script src="./광고 제안 게시판 2_files/maps.js.다운로드"></script>
 </head>
 <body>
-  <!-- header -->
   <header class="site-header">
     <div class="nav-wrap">
       <div class="brand">
-        <a href="vertscreen_main.html">
-          <img src="VertScreen_logo.png" alt="VertScreen Logo">
+        <a href="./vertscreen_main.html">
+        <img src="./VertScreen_logo.png" alt="VertScreen Logo">
         </a>
       </div>
       <nav class="nav">
-        <a href="vertscreen_advertlist.html">광고 종류</a>
-        <a href="vertscreen_brand.html">브랜드 가치</a>
-        <a href="party-make01.html">파티 모집</a>
-        <a href="advertisement.html">광고 제안</a>
-        <a href="review.html">리뷰 게시판</a>
+        <a href="./vertscreen_advertlist.html">광고 종류</a>
+        <a href="./vertscreen_brand.html">브랜드 가치</a>
+        <a href="./party-board.html">파티 모집</a>
+        <a href="./listTest.html">광고 제안</a>
+        <a href="./review.html" id="reviewLink">리뷰 게시판</a>
       </nav>
+      <div class="spacer"></div>
+      <div class="actions" id="authArea">
+        <a href="login.html" class="btn">로그인</a>
+        <a href="login.html" class="btn primary">회원가입</a>
+      </div>
+      <div class="profile" id="profile">
+        <div class="avatar" id="avatar">U</div>
+        <div class="dropdown" id="dropdown">
+          <div style="padding:12px;color:var(--muted)" id="welcomeMsg">사용자님 환영합니다!</div>
+          <a href="./myPage.html">마이페이지</a>
+          <button onclick="logout()">로그아웃</button>
+        </div>
+      </div>
     </div>
   </header>
 
@@ -31,7 +43,7 @@
   <section id="naver-map-section">
     <!-- 주소 부분 -->
     <div class="address-box">
-      <h2>입력된 주소</h2>
+      <h2>주소</h2>
       <p>잠실역 7번 출구</p>
     </div>
 
@@ -45,8 +57,8 @@
         <img src="./광고 제안 하드코딩 이미지1.jfif" id="detailImg" alt="업로드 이미지">
       </div>
       <div class="amount-box">
-        <h3>광고판 금액</h3>
-        <p id="detailAmount">880,000</p>
+        <h3>광고 금액</h3>
+        <p id="detailAmount">880,000 원</p>
       </div>
     </div>
   </section>
@@ -76,11 +88,64 @@
       <a href="./listTest.html" id="inquiryBtn">
       <button class="make-party" onclick="alert('이메일이 전송되었습니다')">문의하기</button>
       </a>
-      <button class="cancel" onclick="window.location.href='advertisement.html'">취소</button>
+      <button class="cancel" onclick="window.location.href='listTest.html'">취소</button>
     </div>
   </main>
 <script>
-	// <![CDATA[  <-- For SVG support
+  /* 프로필 */
+  const profile = document.getElementById("profile");
+  const dropdown = document.getElementById("dropdown");
+  const authArea = document.getElementById("authArea");
+
+  profile.addEventListener("click", () => {
+    dropdown.style.display = dropdown.style.display === "block" ? "none" : "block";
+  });
+    function logout() {
+      localStorage.removeItem("currentUser");
+      location.reload();
+      window.location.href = "vertscreen_main.html";
+    }
+    
+    window.addEventListener("click", (e) => {
+      if (!profile.contains(e.target)) {
+        dropdown.style.display = "none";
+      }
+    });
+    
+    window.onload = () => {
+    const currentUser = localStorage.getItem("currentUser");
+    if (currentUser) {
+      authArea.style.display = "none";
+      profile.style.display = "flex";
+      document.getElementById("avatar").innerText = currentUser.charAt(0).toUpperCase();
+      document.getElementById("welcomeMsg").innerText = currentUser + "님 환영합니다!";
+    }
+
+    // 보호할 링크들
+    const protectedLinks = [
+      document.querySelector('a[href="./party-make01.html"]'),
+      document.querySelector('a[href="./party-detail.html"]'),
+      document.querySelector('a[href="./party-board.html"]'),
+      document.querySelector('a[href="./payment.html"]'),
+      document.querySelector('a[href="./listTest.html"]'),
+      document.querySelector('a[href="./advertisement_detail.html"]')  
+    ];
+
+    // NodeList.forEach()가 오래된 브라우저에서 지원되지 않을 수 있으므로 Array.from으로 감싸줍니다.
+    Array.from(protectedLinks).forEach(link => {
+      // link가 null이 아닐 경우에만 이벤트 리스너를 추가합니다.
+      if (link) {
+        link.addEventListener("click", (e) => {
+          if (!currentUser) {
+            e.preventDefault();
+            alert("로그인이 필요합니다.");
+            window.location.href = "login.html";
+          }
+        });
+      }
+    });
+  };
+
 	if ('WebSocket' in window) {
 		(function () {
 			function refreshCSS() {

@@ -434,7 +434,7 @@
         const partyData = JSON.parse(localStorage.getItem("partyData"));
         const imageContainer = document.getElementById("partyImageContainer");
 
-        // ✅ 현재 리뷰의 파티 이름(partyName)과 저장된 파티 데이터의 제목(title)이 일치할 때만 이미지를 표시하도록 수정
+        // 현재 리뷰의 파티 이름(partyName)과 저장된 파티 데이터의 제목(title)이 일치할 때만 이미지를 표시하도록 수정
         if (partyData && partyData.uploadImg && imageContainer && partyData.title === partyName) {
             imageContainer.innerHTML = `<img src="${partyData.uploadImg}" alt="${partyData.title} 대표 이미지">`;
         }

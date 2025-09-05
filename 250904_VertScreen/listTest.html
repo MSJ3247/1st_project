@@ -95,27 +95,27 @@
   <header class="site-header">
     <div class="nav-wrap">
       <div class="brand">
-        <a href="./vertscreen_main.html"><img src="./VertScreen_logo.png" alt="VertScreen Logo"></a>
+        <a href="./vertscreen_main.html">
+        <img src="./VertScreen_logo.png" alt="VertScreen Logo">
+        </a>
       </div>
       <nav class="nav">
         <a href="./vertscreen_advertlist.html">광고 종류</a>
         <a href="./vertscreen_brand.html">브랜드 가치</a>
-        <a href="./party-make01.html">파티 모집</a>
-        <a href="./advertisement.html">광고 제안</a>
-        <a href="./review.html">리뷰 게시판</a>
+        <a href="./party-board.html">파티 모집</a>
+        <a href="./listTest.html">광고 제안</a>
+        <a href="./review.html" id="reviewLink">리뷰 게시판</a>
       </nav>
       <div class="spacer"></div>
       <div class="actions" id="authArea">
         <a href="login.html" class="btn">로그인</a>
-        <a href="login.html?mode=signup" class="btn primary">회원가입</a>
+        <a href="login.html" class="btn primary">회원가입</a>
       </div>
-
-      <!-- ▼ 로그인 시 보여줄 프로필 -->
-      <div class="profile" id="profile" style="display:none;">
+      <div class="profile" id="profile">
         <div class="avatar" id="avatar">U</div>
         <div class="dropdown" id="dropdown">
           <div style="padding:12px;color:var(--muted)" id="welcomeMsg">사용자님 환영합니다!</div>
-          <a href="myPage.html">마이페이지</a>
+          <a href="./myPage.html">마이페이지</a>
           <button onclick="logout()">로그아웃</button>
         </div>
       </div>
@@ -185,7 +185,7 @@
       });
     });
 
-
+ 
     (function () {
       const authArea = document.getElementById("authArea");
       const profile = document.getElementById("profile");
@@ -215,10 +215,6 @@
         document.getElementById("welcomeMsg").innerText = `${currentUser}님 환영합니다!`;
       }
 
-      const protectedLinks = [
-        document.querySelector('a[href="./party-make01.html"]'),
-        document.querySelector('a[href="#"]')
-      ];
       protectedLinks.forEach(link => {
         if (!link) return;
         link.addEventListener("click", (e) => {
@@ -231,8 +227,17 @@
         });
       });
     })();
+    // 보호할 링크들
+    const protectedLinks = [
+      document.querySelector('a[href="./party-make01.html"]'),
+      document.querySelector('a[href="./party-detail.html"]'),
+      document.querySelector('a[href="./party-board.html"]'),
+      document.querySelector('a[href="./payment.html"]'),
+      document.querySelector('a[href="./advertisement.html"]'),
+      document.querySelector('a[href="./listTest.html"]'),
+      document.querySelector('a[href="./advertisement_detail.html"]') 
+    ];
   </script>
 </body>
 
 </html>
-

@@ -12,17 +12,30 @@
   <header class="site-header">
     <div class="nav-wrap">
       <div class="brand">
-        <a href="vertscreen_main.html">
-          <img src="raw-Photoroom.png" alt="VertScreen Logo">
+        <a href="./vertscreen_main.html">
+        <img src="./VertScreen_logo.png" alt="VertScreen Logo">
         </a>
       </div>
       <nav class="nav">
-        <a href="vertscreen_advertlist.html">광고 종류</a>
-        <a href="vertscreen_brand.html">브랜드 가치</a>
-        <a href="party-make01.html">파티 모집</a>
-        <a href="advertisement.html">광고 제안</a>
-        <a href="review.html">리뷰 게시판</a>
+        <a href="./vertscreen_advertlist.html">광고 종류</a>
+        <a href="./vertscreen_brand.html">브랜드 가치</a>
+        <a href="./party-board.html">파티 모집</a>
+        <a href="./listTest.html">광고 제안</a>
+        <a href="./review.html" id="reviewLink">리뷰 게시판</a>
       </nav>
+      <div class="spacer"></div>
+      <div class="actions" id="authArea">
+        <a href="login.html" class="btn">로그인</a>
+        <a href="login.html" class="btn primary">회원가입</a>
+      </div>
+      <div class="profile" id="profile">
+        <div class="avatar" id="avatar">U</div>
+        <div class="dropdown" id="dropdown">
+          <div style="padding:12px;color:var(--muted)" id="welcomeMsg">사용자님 환영합니다!</div>
+          <a href="./myPage.html">마이페이지</a>
+          <button onclick="logout()">로그아웃</button>
+        </div>
+      </div>
     </div>
   </header>
 
@@ -30,7 +43,7 @@
   <section id="naver-map-section">
     <!-- 주소 부분 -->
     <div class="address-box">
-      <h2>입력된 주소</h2>
+      <h2>주소</h2>
       <p id="detailAddress"></p>
     </div>
 
@@ -44,7 +57,7 @@
         <img id="detailImg" alt="업로드 이미지">
       </div>
       <div class="amount-box">
-        <h3>광고판 금액</h3>
+        <h3>광고 금액</h3>
         <p id="detailAmount"></p>
       </div>
     </div>
@@ -64,7 +77,7 @@
       <a href="./vertscreen_main.html" id="inquiryBtn">
       <button class="make-party" onclick="alert('이메일이 전송되었습니다')">문의하기</button>
       </a>
-      <button class="cancel" onclick="window.location.href='advertisement.html'">취소</button>
+      <button class="cancel" onclick="window.location.href='listTest.html'">돌아가기</button>
     </div>
   </main>
   <script>
@@ -75,7 +88,7 @@
     return;
   }
   document.getElementById("detailImg").src = ad.uploadImg || "./no_image.png";
-  document.getElementById("detailAmount").textContent = ad.amount + "원";
+  document.getElementById("detailAmount").textContent = ad.amount.toLocaleString() + " 원";
   document.getElementById("detailTitle").textContent = "광고 제안";
   document.getElementById("detailContent").textContent = ad.content;
   document.getElementById("detailAddress").textContent = ad.address || "주소 정보 없음";

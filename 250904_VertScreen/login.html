@@ -112,7 +112,7 @@
     /* 카드 안쪽 좌표 기준으로 배치되도록 relative 지정 */
     .auth-card {
       position: relative;
-      /* 🔹 추가 */
+      /* 추가 */
     }
   </style>
 </head>
@@ -127,7 +127,7 @@
 
     <!-- 로그인 폼 -->
     <div id="loginForm">
-      <a href="VertScreen_main.html" class="back-arrow">←</a>
+      <a href="vertScreen_main.html" class="back-arrow">←</a>
       <input type="text" id="loginId" placeholder="이메일 또는 아이디" />
       <input type="password" id="loginPw" placeholder="비밀번호" />
       <button class="btn primary" onclick="login()">로그인</button>
@@ -136,7 +136,7 @@
 
     <!-- 회원가입 폼 -->
     <div id="signupForm" style="display: none">
-      <a href="VertScreen_main.html" class="back-arrow">←</a>
+      <a href="vertScreen_main.html" class="back-arrow">←</a>
       <div class="input-row">
         <input type="email" id="signupEmail" placeholder="이메일" />
         <button class="btn small" onclick="checkDuplicate()">중복확인</button>
@@ -153,21 +153,21 @@
     // 이메일 중복확인 여부 저장 변수
     let emailChecked = false;
 
-    // 🔹 로그인 → 회원가입 화면 전환
+    // 로그인 → 회원가입 화면 전환
     function showSignup() {
       document.getElementById("loginForm").style.display = "none";   // 로그인 폼 숨기기
       document.getElementById("signupForm").style.display = "block"; // 회원가입 폼 보이기
       document.getElementById("formTitle").innerText = "회원가입";    // 제목 변경
     }
 
-    // 🔹 회원가입 → 로그인 화면 전환
+    // 회원가입 → 로그인 화면 전환
     function showLogin() {
       document.getElementById("signupForm").style.display = "none";  // 회원가입 폼 숨기기
       document.getElementById("loginForm").style.display = "block";  // 로그인 폼 보이기
       document.getElementById("formTitle").innerText = "로그인";      // 제목 변경
     }
 
-    // 🔹 이메일 중복 확인
+    // 이메일 중복 확인
     function checkDuplicate() {
       const email = document.getElementById("signupEmail").value.trim();
       if (!email) {
@@ -185,7 +185,7 @@
       }
     }
 
-    // 🔹 회원가입 처리
+    // 회원가입 처리
     function signup() {
       const email = document.getElementById("signupEmail").value.trim();
       const pw = document.getElementById("signupPw").value.trim();
@@ -214,7 +214,7 @@
       showLogin(); // 회원가입 후 로그인 화면으로 이동
     }
 
-    // 🔹 로그인 처리
+    // 로그인 처리
     function login() {
       const loginId = document.getElementById("loginId").value.trim();
       const pw = document.getElementById("loginPw").value.trim();
@@ -237,7 +237,7 @@
       }
     }
 
-    // 🔹 페이지 로드 시 URL 파라미터 확인
+    // 페이지 로드 시 URL 파라미터 확인
     // ex) login.html?mode=signup → 회원가입 폼 자동 표시
     window.onload = () => {
       const params = new URLSearchParams(window.location.search);

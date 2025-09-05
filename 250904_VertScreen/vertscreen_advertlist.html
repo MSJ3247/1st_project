@@ -71,8 +71,8 @@
       <nav class="nav">
         <a href="./vertscreen_advertlist.html">광고 종류</a>
         <a href="./vertscreen_brand.html">브랜드 가치</a>
-        <a href="./party-make01.html">파티 모집</a>
-        <a href="#">광고 제안</a>
+        <a href="./party-board.html">파티 모집</a>
+        <a href="./listTest.html">광고 제안</a>
         <a href="./review.html" id="reviewLink">리뷰 게시판</a>
       </nav>
       <div class="spacer"></div>
@@ -145,10 +145,15 @@
       document.getElementById("welcomeMsg").innerText = `${currentUser}님 환영합니다!`;
     }
 
-    // 보호 링크: 미로그인 시 차단
+    // 보호할 링크들
     const protectedLinks = [
       document.querySelector('a[href="./party-make01.html"]'),
-      document.querySelector('a[href="#"]') // 광고 제안 (추후 실제 링크로 교체)
+      document.querySelector('a[href="./party-detail.html"]'),
+      document.querySelector('a[href="./party-board.html"]'),
+      document.querySelector('a[href="./payment.html"]'),
+      document.querySelector('a[href="./advertisement.html"]'),
+      document.querySelector('a[href="./listTest.html"]'),
+      document.querySelector('a[href="./advertisement_detail.html"]')  
     ];
     protectedLinks.forEach(link => {
       if (!link) return;
