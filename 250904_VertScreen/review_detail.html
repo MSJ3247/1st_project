@@ -22,10 +22,14 @@
     #partyImageContainer {
       width: 100%;
       margin-bottom: 30px;
+      text-align: center;
     }
 
     #partyImageContainer img {
-      width: 100%;
+      width: 70%;           /* 기존 100% → 70% */
+      max-width: 600px;     /* 너무 커지지 않도록 제한 */
+      display: block;
+      margin: 0 auto;
       border-radius: var(--radius);
     }
 
@@ -258,10 +262,7 @@
       }
 
       function downscale(img, maxW = 800, maxH = 800) {
-        let {
-          width,
-          height
-        } = img;
+        let { width, height } = img;
         const ratio = Math.min(maxW / width, maxH / height, 1);
         const w = Math.round(width * ratio);
         const h = Math.round(height * ratio);
@@ -430,13 +431,13 @@
       });
 
       window.onload = () => {
-        // 파티 대표 이미지 로드
-        const partyData = JSON.parse(localStorage.getItem("partyData"));
+        // ✅ 파티 대표 이미지 로드 (partyList에서 찾기)
+        const partyList = JSON.parse(localStorage.getItem("partyList")) || [];
+        const targetParty = partyList.find(p => p.title === partyName);
         const imageContainer = document.getElementById("partyImageContainer");
 
-        // 현재 리뷰의 파티 이름(partyName)과 저장된 파티 데이터의 제목(title)이 일치할 때만 이미지를 표시하도록 수정
-        if (partyData && partyData.uploadImg && imageContainer && partyData.title === partyName) {
-            imageContainer.innerHTML = `<img src="${partyData.uploadImg}" alt="${partyData.title} 대표 이미지">`;
+        if (targetParty && targetParty.uploadImg) {
+          imageContainer.innerHTML = `<img src="${targetParty.uploadImg}" alt="${targetParty.title} 대표 이미지">`;
         }
 
         // 기존 리뷰 로드 및 로그인 확인 로직
