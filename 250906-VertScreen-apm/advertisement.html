@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>마커 클릭 정보 표시</title>
+  <link rel="stylesheet" href="./VertScreen_mainStyle.css" />
+  <link rel="stylesheet" href="./advertisement.css">
+</head>
+<body>
+  <!--header-->
+  <header class="site-header">
+    <div class="nav-wrap">
+      <div class="brand">
+        <a href="vertscreen_main.html">
+        <img src="./VertScreen_logo.png" alt="VertScreen Logo">
+        </a>
+      </div>
+      <nav class="nav">
+        <a href="vertscreen_advertlist.html">광고 종류</a>
+        <a href="vertscreen_brand.html">브랜드 가치</a>
+        <a href="party-board.html">파티 모집</a>
+        <a href="listTest.html">광고 제안</a>
+        <a href="review.html">리뷰 게시판</a>
+      </nav>
+      <div class="spacer"></div>
+      <div class="actions">
+        <button class="btn">로그인</button>
+        <button class="btn primary">회원가입</button>
+      </div>
+    </div>
+  </header>
+  <!--header end-->
+
+  <!-- 네이버 맵 화면 -->
+  <section id="naver-map-section">
+  <h2>광고를 희망하시는</h2>
+  <h2>주소를 입력해 주세요</h2>
+  <div id="map"></div>
+  </section>
+  <!-- 광고주가 찍을 마크 입력 받는곳-->
+  <div class="address-search">
+  <input type="text" id="address" placeholder="주소를 입력하세요">
+  <button onclick="searchAddress()">확인</button>
+  </div>
+
+  <!--  파티 구성을 위한 이미지 업로드 및 내용-->
+    <div>
+    <h2>광고 제안을 위한 이미지 업로드 및 내용</h2>
+    <div class="party-ad">
+      <div>
+        <img id="imagePreview" src="./no_image.png" alt=""><br><br>
+        <label for="imageInput" class="custom-file-button">이미지 선택</label>
+        <input type="file" id="imageInput" accept="image/*">
+        <p style="color: red;">※ 이미지 파일은 광고 예시를 첨부해주세요.</p>
+      </div>
+      <div class="info-text-wrap">
+        <textarea id="textTitle" placeholder="금액을 입력하세요."></textarea>
+        <textarea id="textInput" placeholder="내용을 입력하세요."></textarea>
+      </div>
+    </div>
+    </div>
+    
+    <!-- ⑥⑦ 제안/취소 버튼 -->
+    <section class="pnc-btn">
+        <button class="make-party" onclick="signup()">제안 시작</button>
+        <a href="./listTest.html"><button class="cancel">취소</button></a>
+    </section>
+
+  <!--footer start-->
+  <footer>
+    <div></div>
+    <div></div>
+  </footer>
+  <!--footer end-->
+
+<script>
+  // 주소 검색 → 좌표/마커 갱신
+  function searchAddress() {
+  const address = document.getElementById("address").value.trim();
+  if (!address) {
+    alert("주소를 입력해주세요.");
+    return;
+  }
+
+  // 주소가 입력되었을 때 alert
+  alert("주소가 확인되었습니다: " + address);
+  }
+    // 이미지 미리보기
+    document.getElementById('imageInput').addEventListener('change', function(event) {
+      const file = event.target.files[0];
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        document.getElementById('imagePreview').src = e.target.result;
+      };
+      if (file) reader.readAsDataURL(file);
+    });
+
+function signup(){
+  const amountValue = document.getElementById("textTitle").value.trim();
+  const contentValue = document.getElementById("textInput").value.trim();
+  const addressValue = document.getElementById("address").value.trim(); // 주소 가져오기
+
+  if (!amountValue) {
+    alert("금액을 입력해주세요.");
+    document.getElementById("textTitle").focus();
+    return;
+  }
+  if (!contentValue) {
+    alert("내용을 입력해주세요.");
+    document.getElementById("textInput").focus();
+    return;
+  }
+  if (!addressValue) {
+    alert("주소를 입력해주세요.");
+    document.getElementById("address").focus();
+    return;
+  }
+
+  let adList = JSON.parse(localStorage.getItem("adList")) || [];
+
+  // 마커 좌표 대신 주소를 바로 저장
+  const newAd = {
+    amount: amountValue,
+    content: contentValue,
+    uploadImg: document.getElementById("imagePreview").src,
+    address: addressValue,
+    createdAt: new Date().toLocaleString()
+  };
+
+  adList.push(newAd);
+  localStorage.setItem("adList", JSON.stringify(adList));
+
+  // 리스트 페이지로 이동
+  window.location.href = "./listTest.html";
+}
+  // 이미지, 금액, 제목, 내용 업데이트
+  document.getElementById("detailImg").src = ad.uploadImg || "./no_image.png";
+  document.getElementById("detailAmount").textContent = ad.amount + "원";
+  document.getElementById("detailTitle").textContent = "광고 제안"; // 필요시 ad.content 일부나 제목 추가 가능
+  document.getElementById("detailContent").textContent = ad.content;
+
+</script>
+</body>
+</html>
+
+
