@@ -156,7 +156,7 @@
       <p>부분을 완화하고자 이 프로젝트를 진행했습니다.</p>
       <p>리뷰 기능을 통해 서로의 경험을 공유할 수 있으며</p>
       <p>더 나은 방향으로 발전할 수 있는 계기가 될 수 있습니다.</p>
-      <a href="./party-board.html"><button class="cta-btn">파티 모집하러 가기</button></a>
+      <a href="./party-board.html" class="cta-btn">파티 모집하러 가기</a>
     </main>
     <footer>
       <p><strong>Project A P M</strong></p>
@@ -218,6 +218,21 @@
         }
       });
     });
+    // 파티 모집 하기 클릭시 로그인 확인
+    const partyBtn = document.querySelector('.cta-btn');
+
+    if (partyBtn) {
+      partyBtn.addEventListener("click", (e) => {
+        const u = localStorage.getItem("currentUser");
+        if (!u) {
+          e.preventDefault();
+          alert("로그인이 필요합니다.");
+          location.href = "login.html";
+        } else {
+          location.href = "./party-board.html";
+        }
+      });
+    }
   })();
 </script>
 </body>

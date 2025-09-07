@@ -166,6 +166,22 @@
         }
       });
     });
+
+    // 파티 모집 하기 클릭시 로그인 확인
+    const partyBtn = document.querySelector('.cta-btn');
+
+    if (partyBtn) {
+      partyBtn.addEventListener("click", (e) => {
+        const u = localStorage.getItem("currentUser");
+        if (!u) {
+          e.preventDefault();
+          alert("로그인이 필요합니다.");
+          location.href = "login.html";
+        } else {
+          location.href = "./party-board.html";
+        }
+      });
+    }
   })();
 </script>
 
